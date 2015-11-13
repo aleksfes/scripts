@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Выводит описание коммита в виде, удобном для копирования в комментарий Jira
+
+commit="$1"
+
+git show --pretty=format:"%n%s%n%b%ncommit %H" --name-status $commit | cat && echo ""

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Октрывает vim с файлом сессии ~/Session.vim, если он есть
+
+home_folder="`cd ~ && pwd`"
+vim_session_file="$home_folder/.session.vim"
+
+if [ -f "$vim_session_file" ]; then
+	vim -S $vim_session_file
+else
+	vim
+fi
+

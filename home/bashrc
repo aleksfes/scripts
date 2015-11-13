@@ -1,0 +1,41 @@
+export LESS=-Rn
+alias dch='dch --distributor=debian'
+
+home="$(echo ~)"
+
+if [ -d "$home/scripts" ]; then
+        PATH="$home/scripts:$home/scripts/bin:$PATH"
+fi
+
+
+# Enable 256 colors within xterm.
+if [ -e /usr/share/terminfo/x/xterm-256color ]; then
+	export TERM='xterm-256color'
+else
+	export TERM='xterm-color'
+fi
+
+
+# bash save history immediately
+# http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
+# http://askubuntu.com/questions/67283/is-it-possible-to-make-writing-to-bash-history-immediate
+export HISTCONTROL="${HISTCONTROL}:ignoredups:erasedups:ignorespace"
+shopt -s histappend
+export PROMPT_COMMAND="history -a; history -n"
+
+
+# Алиасы для git команд.
+alias gst="git status"
+alias gd="git diff -M"
+alias gds="gd --staged"
+alias ga="git add"
+alias gaa="git add --all"
+alias gl="git log"
+alias gs="git show"
+alias gci="git commit --verbose"
+alias gco="git checkout"
+alias gru="git remote update"
+alias gcp="git cherry-pick -x"
+alias grst="git reset"
+alias grstfull="grst --hard && git clean -fd && gst"
+alias gad="gaa && gds"

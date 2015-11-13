@@ -1,0 +1,68 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+HELP="
+$PROG - shortcut for git fetch with given branch and remote repository and checkout branch
+
+Usage:
+  $PROG repo [branch]
+
+  repo - required, remote repository to update and merge from
+      or it can be format \"repo/branch\"
+  branch - optional, branch to merge, you can omit this param if use \"repo/branch\" form
+
+Example:
+  $PROG avm/mu-1.89-index-part8
+  $PROG avm mu-1.89-index-part8
+"
+
+. _common.sh
+
+
+# Параметры
+
+
+p_1="${1}"
+
+# Сначала пытаемся распарсить вариант repo/branch.
+p_repo=${p_1%%/*}
+p_branch=${p_1##*/}
+
+# Читаем ветку из второго параметра, если используется форма вызова repo branch.
+if [ "$p_branch" = "$p_1" ]; then
+	p_branch="${2}"
+fi
+
+if [ -z "$p_repo" -o -z "$p_branch" ]; then
+	error_and_help "you should set repo and branch!"
+fi
+
+
+# Все дела
+
+difflines="$(git diff | wc -l)"
+if [ "$difflines" != "0" ]; then
+	error "you have local changes! Please, stash or reset them."
+fi
+
+# Проверяем, что такой локальной ветки ещё нет.
+run_cmd "git show-branch ${p_branch}"
+
+showbranch_status="$?"
+# Если ветка не существует, то фетчим её из репозитория.
+if [ "$showbranch_status" == "128" ]; then
+	run_cmd "git fetch ${p_repo} ${p_branch}:${p_branch}" \
+		"Fetching branch ${p_branch} from remote repository ${p_repo}"
+	check_cmd_status "fetching failed"
+elif [ "$showbranch_status" != "0" ]; then
+	error "unknown error (exit code: ${showbranch_status})"
+else
+	show_msg "Branch ${p_branch} already exists! Using it."
+fi
+
+run_cmd "git checkout ${p_branch}" \
+	"Checking out branch ${p_branch}"
+check_cmd_status "checkout failed"
+
+run_cmd "git status" \
+	"Branch ${p_branch} successfully fetched from ${p_repo} and checked out!"

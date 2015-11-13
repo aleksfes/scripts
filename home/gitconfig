@@ -1,0 +1,15 @@
+[user]
+	name = Alexander Feoktistov
+	email = aleksfes@gmail.com
+[core]
+	filemode = false
+	trustctime = false
+#	autocrlf = input
+	editor = vim
+	preloadindex = true
+[i18n]
+	commitencoding = utf8
+	logoutputencoding = utf8
+
+[color]
+	ui = true
