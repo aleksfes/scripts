@@ -46,7 +46,7 @@ set scrolloff=5 " Отступ курсора от конца экрана
 set tabstop=2 "Размер табуляции
 set shiftwidth=2 "Размер отступов
 set smartindent "Умные отступы
-set expandtab
+" set expandtab
 
 highlight ColorColumn ctermbg=253
 let &colorcolumn="100,".join(range(120,999), ",")
@@ -150,32 +150,46 @@ function! OpenFileUnderCursor()
 	endif
 endfunction
 
+function! UseLeaderHotkey(afterLeader)
+	echo "Current hotkey is deprecated! Please, use '\<Leader\>" . a:afterLeader . "' hotkey."
+endfunction
+
 
 " Горячие клавиши:
 
 " быстрое открытие файлов в табе
-map <F1> :tabnew<Space>
+map <F1> :call UseLeaderHotkey("1")<CR>
+noremap <Leader>1 :tabnew<Space>
+noremap <Leader>o :tabnew<Space>
 " очистка поиска
-map <F2> :let @/=''<CR>
+map <F2> :call UseLeaderHotkey("2")<CR>
+noremap <Leader>2 :let @/=''<CR>
 " сохранение изменений
-map <F3> :w<CR>
+map <F3> :call UseLeaderHotkey("3")<CR>
+imap <F3> :call UseLeaderHotkey("3")<CR>
+noremap <Leader>3 :update<CR>
+inoremap <Leader>3 <Esc>:update<CR>a
+noremap <Leader>w :update<CR>
+inoremap <Leader>w <Esc>:update<CR>a
 " сохранение изменений из insert-режима с сохранением позиции курсора
-imap <F3> <Esc>:w<CR>li
 " открыть файл под курсором
-map <F4> :call OpenFileUnderCursor()<CR>
+map <F4> :call UseLeaderHotkey("4")<CR>
+noremap <Leader>4 :call OpenFileUnderCursor()<CR>
 " закрытие текущего таба
-map <F5> :q<CR>
+map <F5> :call UseLeaderHotkey("5")<CR>
+noremap <Leader>5 :q<CR>
+noremap <Leader>q :q<CR>
 " вертикальный сплит файла
-map <F6> :vsplit<Space>
-" быстрое открытие NERDTree
-map <F8> :call OpenNerdTree()<CR>
-" горизонтальный сплит файла
-map <F7> :split<Space>
+map <F6> :call UseLeaderHotkey("6")<CR>
+noremap <Leader>6 :vsplit<Space>
 " выход с сохранением сессии
-map <F11> :call SaveSessionAndQuit()
+map <F11> :call UseLeaderHotkey("9")<CR>
+map <Leader>9 :call SaveSessionAndQuit()
 " быстрый переход между табами
 map <C-h> gT
 map <C-l> gt
+
+imap <Leader>; <Esc>A;<Esc>
 
 " Настройки Ctrl-P
 let g:ctrlp_map = '<F9>'
