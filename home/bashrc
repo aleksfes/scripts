@@ -21,7 +21,9 @@ fi
 # http://askubuntu.com/questions/67283/is-it-possible-to-make-writing-to-bash-history-immediate
 export HISTCONTROL="${HISTCONTROL}:ignoredups:erasedups:ignorespace"
 shopt -s histappend
-export PROMPT_COMMAND="history -a; history -n"
+# I don't need bash history refreshing after each command running anymore.
+#export PROMPT_COMMAND="history -a; history -n"
+export PROMPT_COMMAND="history -a"
 
 
 # Алиасы для git команд.
