@@ -78,3 +78,4 @@ run_cmd "git push $p_force $p_repo ${curr_branch}:${p_to}" \
 # Sometimes I need to get last commit hash.
 show_msg "Last commit:"
 GIT_PAGER=cat git log --pretty=oneline -n 1
+show_msg "---"
