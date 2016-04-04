@@ -176,7 +176,7 @@ inoremap <Leader>w <Esc>:update<CR>a
 map <F4> :call UseLeaderHotkey("4")<CR>
 noremap <Leader>4 :call OpenFileUnderCursor()<CR>
 " закрытие текущего таба
-map <F5> :call UseLeaderHotkey("5")<CR>
+map <F5> :q<CR>
 noremap <Leader>5 :q<CR>
 noremap <Leader>q :q<CR>
 " вертикальный сплит файла
