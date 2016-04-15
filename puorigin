@@ -75,6 +75,10 @@ fi
 run_cmd "git push $p_force $p_repo ${curr_branch}:${p_to}" \
 	"Pushing branch $curr_branch to repo $p_repo to branch $p_to"
 
+if [ $? != 0 ]; then
+	error "error occured while pushing."
+fi
+
 # Sometimes I need to get last commit hash.
 show_msg "Last commit:"
 GIT_PAGER=cat git log --pretty=oneline -n 1
