@@ -192,11 +192,14 @@ map <C-l> gt
 imap <Leader>; <Esc>A;<Esc>
 
 " Настройки Ctrl-P
-let g:ctrlp_map = '<F9>'
+" let g:ctrlp_map = '<F9>'
 let g:ctrlp_by_filename = 1
 let g:ctrlp_max_height = 30
 let g:ctrlp_open_multiple_files = 'tj'
 let g:ctrlp_lazy_update = 1
+let g:ctrlp_custom_ignore = {
+	\ 'dir': '(node_modules|bower_components)$',
+	\ }
 let g:ctrlp_prompt_mappings = {
 	\ 'AcceptSelection("e")': [],
 	\ 'AcceptSelection("t")': ['<c-t>', '<cr>'],
