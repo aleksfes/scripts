@@ -59,6 +59,7 @@ set backspace=2
 " NERDTree
 " отображение скрытых файлов
 let NERDTreeShowHidden=1
+let NERDTreeAutoDeleteBuffer = 1
 
 " скрытие ненужных сообщений
 set shortmess=atI
