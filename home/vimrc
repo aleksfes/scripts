@@ -48,6 +48,9 @@ set shiftwidth=2 "Размер отступов
 set smartindent "Умные отступы
 " set expandtab
 
+" Убираю обычный индикатор режима потому, что использую vim-airline.
+set noshowmode
+
 highlight ColorColumn ctermbg=253
 let &colorcolumn="100,".join(range(120,999), ",")
 
