@@ -46,7 +46,7 @@ set scrolloff=5 " Отступ курсора от конца экрана
 set tabstop=2 "Размер табуляции
 set shiftwidth=2 "Размер отступов
 set smartindent "Умные отступы
-" set expandtab
+set expandtab
 
 " Убираю обычный индикатор режима потому, что использую vim-airline.
 set noshowmode
@@ -197,11 +197,12 @@ imap <Leader>; <Esc>A;<Esc>
 
 " Настройки Ctrl-P
 let g:ctrlp_use_caching = 0
+let g:ctrlp_by_filename = 0
 let g:ctrlp_max_height = 30
 let g:ctrlp_open_multiple_files = 'tj'
 let g:ctrlp_lazy_update = 1
 let g:ctrlp_custom_ignore = {
-	\ 'dir': '\v[\/](node_modules|bower_components)$',
+	\ 'dir': '\v[\/](\.git|node_modules|bower_components)$',
 	\ }
 let g:ctrlp_prompt_mappings = {
 	\ 'AcceptSelection("e")': [],
