@@ -1,10 +1,10 @@
 export LESS=-Rn
 alias dch='dch --distributor=debian'
 
-home="$(echo ~)"
+SCRIPTS="${HOME}/scripts"
 
-if [ -d "$home/scripts" ]; then
-        PATH="$home/scripts:$home/scripts/bin:$PATH"
+if [ -d $SCRIPTS ]; then
+        PATH="${SCRIPTS}/bin:$PATH"
 fi
 
 

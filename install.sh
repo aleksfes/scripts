@@ -3,13 +3,13 @@
 PROG="${0##*/}"
 HELP="no need"
 
-scripts_folder=$(readlink -f $0)
-scripts_folder=${scripts_folder%/*}
-cfg_folder=$scripts_folder/home
+SCRIPTS=$(readlink -f $0)
+SCRIPTS=${SCRIPTS%/*}
+cfg_folder=$SCRIPTS/home
 
 ssh_public_key="feoktistov_15.07.2015.ssh.public"
 
-. ${scripts_folder}/_common.sh
+source ${SCRIPTS}/lib/_common.sh
 
 
 home_folder=$(readlink -f ~)
