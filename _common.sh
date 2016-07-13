@@ -202,7 +202,7 @@ make_link () {
 			rm -rf $symlink
 		fi
 		# Создаём симлинк.
-		ln -sfT $target_file $symlink
+		ln -s $target_file $symlink
 	else
 		echo "make_link: file $target_file not found!"
 	fi
