@@ -63,7 +63,7 @@ echo ".vimrc installed."
 # чтобы не заставлять себя вводить этот email каждый раз.
 get_git_email() {
 	local git_config=$1
-	local email=$(grep -oP "email = \S+" $git_config | head -n 1 | grep -oP "\S+$")
+	local email=$(egrep -o "email = \S+" $git_config | head -n 1 | egrep -o "\S+$")
 	echo $email
 }
 
