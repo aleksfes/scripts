@@ -4,7 +4,7 @@
 [core]
 	filemode = false
 	trustctime = false
-#	autocrlf = input
+	autocrlf = input
 	editor = vim
 	preloadindex = true
 [i18n]
