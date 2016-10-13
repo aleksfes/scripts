@@ -27,6 +27,10 @@ set t_Co=256
 set background=light
 colorscheme myhemisu
 
+" Делаем так, чтобы vim останавливался на _ при прыжках по e/b.
+let g:feoktistov_iskeyword=substitute(&iskeyword, ',_', '', '')
+let &iskeyword=g:feoktistov_iskeyword
+
 set textwidth=120 " Автоперенос текста.
 set laststatus=2 "Всегда показывать строку состояния
 set number "Нумеровать строки
@@ -50,7 +54,7 @@ set scrolloff=5 " Отступ курсора от конца экрана
 
 " Отступы в 2 пробела для Angular.
 set tabstop=4 "Размер табуляции
-set shiftwidth=2 "Размер отступов
+set shiftwidth=4 "Размер отступов
 set smartindent "Умные отступы
 set expandtab
 
@@ -92,12 +96,15 @@ set backupdir=~/.vim/_backup//
 " Папка для swp-файлов, // означает автоматическое разрешение конфликтов имён
 set directory=~/.vim/_swp//
 
-" json, jake как javascript
+" javascript
 au BufNewFile,BufRead *.json set filetype=javascript
 au BufNewFile,BufRead *.tjson set filetype=javascript
 au BufNewFile,BufRead *.jake set filetype=javascript
 au BufNewFile,BufRead Jakefile set filetype=javascript
 au BufNewFile,BufRead *.bemhtml set filetype=javascript
+
+" css
+au BufNewFile,BufRead *.styl set filetype=css
 
 " быстрое сохранение сессии/файлов и выход
 function! SaveSessionAndQuit()
@@ -167,11 +174,6 @@ function! UseLeaderHotkey(afterLeader)
 	echo "Current hotkey is deprecated! Please, use '\<Leader\>" . a:afterLeader . "' hotkey."
 endfunction
 
-function! CloseTab()
-	:q
-	:tabprev
-endfunction
-
 
 " Горячие клавиши:
 
@@ -206,8 +208,20 @@ map <Leader>9 :call SaveSessionAndQuit()
 " быстрый переход между табами
 map <C-h> gT
 map <C-l> gt
+" Вставка относительного пути до текущего файла.
+nmap <Leader>f o<Esc>"%pv
+
+" заставляем Vim использовать системный буфер обмена при копировании/вставке (y/p).
+set clipboard=unnamed
+
+" убираем лидирующие пробельные символы у текущей строки и подклеиваем её к предыдущей
+nmap <Leader><Space> ^d0d$k$p
 
 imap <Leader>; <Esc>A;<Esc>
+nmap <Leader>; <Esc>A;<Esc>
+imap <Leader>, <Esc>A,<Esc>
+nmap <Leader>, <Esc>A,<Esc>
+nmap <Leader><Enter> i<CR><Esc>
 
 " Настройки Ctrl-P
 let g:ctrlp_use_caching = 0
@@ -241,3 +255,39 @@ xnoremap p "_dP
 " Перенос закрывающей фигурной скобки на новую строку.
 " http://stackoverflow.com/questions/21316727/automatic-closing-brackets-for-vim
 let g:delimitMate_expand_cr = 2
+
+" Подменяем частые опечатки.
+command Qa qa
+command W w
+
+" Свой grep с блекджеком и прочим.
+" Параметры:
+" - шаблон для поиска;
+" - папка, в которой ищем, по умолчанию ищет в текущей папке.
+function DoGrep(...)
+    let l:exclude = ""
+    let l:exclude = l:exclude . " --exclude-dir node_modules"
+    let l:exclude = l:exclude . " --exclude-dir bower_components"
+    let l:exclude = l:exclude . " --exclude-dir .tmp"
+    let l:exclude = l:exclude . " --exclude-dir dist"
+    " FIXME: убрать после перехода на нормальную сборку!
+    let l:exclude = l:exclude . " --exclude populate_template_cache.js"
+
+    " Вручную экранируем $ перед передачей в grep.
+    let l:legal_pattern=substitute(a:1, "\\$", "\\\\$", "")
+
+    let l:target= a:0 > 1 ? a:2 : "."
+
+    " Запускаем grep с silent, чтобы Vim не просил нажать на Enter и не показывал вывод grep.
+    :execute "silent grep! " . l:exclude . " -ir \"" . l:legal_pattern . "\" " . l:target
+
+    " Если сделать copen в текущей табе, а потом открыть файл из списка найденного,
+    " то мы потеряем исходный файл из текущей табы, поэтому открываем новую табу сразу.
+    :tabnew
+    :copen
+
+endfunction
+" Команда для своего grep.
+command -nargs=* Greee :call DoGrep(<f-args>)
+" Shortcut для своего grep.
+noremap <Leader>g :Greee<Space>
