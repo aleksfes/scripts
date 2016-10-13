@@ -41,7 +41,10 @@ fi
 
 # Все дела
 
-difflines="$(git diff | wc -l)"
+difflines="$(git diff --name-status | wc -l)"
+# Кривой способ сделать trim для цифры в MacOS.
+difflines=$((difflines + 0))
+echo "difflines = $difflines"
 if [ "$difflines" != "0" ]; then
 	error "you have local changes! Please, stash or reset them."
 fi
