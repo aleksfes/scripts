@@ -99,7 +99,7 @@ echo ".gitconfig installed."
 
 # Вставляем кастомный email на место.
 if [ -n "$git_custom_email" ]; then
-	sed -i -e "s/email\s\+=\s\+\S\+/email = ${git_custom_email}/g" $git_custom_config
+	sed -i -e "s/email = .*/email = ${git_custom_email}/g" $git_custom_config
 	echo "Custom email (${git_custom_email}) installed to .gitconfig."
 fi
 
