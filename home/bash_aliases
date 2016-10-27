@@ -1,0 +1,28 @@
+# Алиасы для git команд.
+alias gst="git status"
+alias gd="git diff -M"
+alias gds="gd --staged"
+alias ga="git add"
+alias gaa="git add --all"
+alias gl="git log"
+alias gs="git show"
+alias gci="git commit --verbose"
+alias gco="git checkout"
+alias gru="git remote update"
+alias gcp="git cherry-pick -x"
+alias grst="git reset"
+alias grstfull="grst --hard && git clean -fd && gst"
+
+# Так как в MacOS сломался мой любимый grext, попробую перейти на алиасы для grep.
+alias grep_js="grep --include \"*.js\" -ir"
+alias grecss="grep --include \"*.css\" -ir"
+alias grep_html="grep --include \"*.html\" -ir"
+alias grep_all="grep -ir"
+alias grep_ts="grep --include \"*.ts\" -ir"
+
+# Для ok-admin исключаю скомпилированные шаблоны, чтобы они не забивали выдачу.
+# FIXME!!!
+alias grejs="grep_js --exclude populate_template_cache.js"
+alias grehtml="grep_html --exclude populate_template_cache.js"
+alias greee="grep_all --exclude populate_template_cache.js"
+alias grets="grep_ts --exclude populate_template_cache.js"
