@@ -1,0 +1,10 @@
+#!/bin/bash
+
+shopt -s expand_aliases
+source ${HOME}/scripts/home/bash_aliases
+
+if [ -n "$1" ]; then
+    git add $@ && gds
+else
+    gaa && gds
+fi
