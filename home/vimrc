@@ -97,11 +97,13 @@ set backupdir=~/.vim/_backup//
 set directory=~/.vim/_swp//
 
 " javascript
-au BufNewFile,BufRead *.json set filetype=javascript
-au BufNewFile,BufRead *.tjson set filetype=javascript
+au BufNewFile,BufRead *.tjson set filetype=json
 au BufNewFile,BufRead *.jake set filetype=javascript
 au BufNewFile,BufRead Jakefile set filetype=javascript
 au BufNewFile,BufRead *.bemhtml set filetype=javascript
+
+" vim-json
+let g:vim_json_syntax_conceal = 0
 
 " css
 au BufNewFile,BufRead *.styl set filetype=css
