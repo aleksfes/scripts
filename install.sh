@@ -52,6 +52,13 @@ echo ".vim installed."
 make_link $cfg_folder/vimrc $home_folder/.vimrc
 echo ".vimrc installed."
 
+# tern npm install
+vim_tern_folder=$SCRIPTS/home/vim/bundle/tern_for_vim
+if [ -d $vim_tern_folder ]; then
+	run_cmd_in_dir $vim_tern_folder "npm install" "Installing TernJS ..."
+	echo "TernJS installed."
+fi
+
 
 # git settings
 

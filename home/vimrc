@@ -55,6 +55,13 @@ set scrolloff=5 " Отступ курсора от конца экрана
 " Убираю обычный индикатор режима потому, что использую vim-airline.
 set noshowmode
 
+" TernJS, tern_for_vim
+" http://www.dotnetsurfers.com/blog/2016/02/08/using-vim-as-a-javascript-ide
+" enable keyboard shortcuts
+let g:tern_map_keys=1
+" show argument hints
+let g:tern_show_argument_hints='on_hold'
+
 " Мышь в MacOS для скролла и выделения.
 set mouse=a
 
@@ -289,7 +296,7 @@ function DoUpdateCTags()
 endfunction
 command UpdateCTags :call DoUpdateCTags()
 
-map <Leader>T <C-w><C-]><C-w>T
-map <Leader>t <Leader>T<C-h>
+map <Leader>C <C-w><C-]><C-w>T
+map <Leader>c <Leader>C<C-h>
 " При переходе между режимами курсор сдвигается, поэтому его нужно вернуть на место.
-imap <Leader>t <Esc><Leader>tli
+imap <Leader>c <Esc><Leader>cli
