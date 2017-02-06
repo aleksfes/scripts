@@ -52,12 +52,6 @@ set incsearch " Поиск одновременно с вводом.
 set completeopt=longest,menuone
 set scrolloff=5 " Отступ курсора от конца экрана
 
-" Отступы в 2 пробела для Angular.
-set tabstop=4 "Размер табуляции
-set shiftwidth=4 "Размер отступов
-set smartindent "Умные отступы
-set expandtab
-
 " Убираю обычный индикатор режима потому, что использую vim-airline.
 set noshowmode
 
@@ -182,24 +176,15 @@ endfunction
 " быстрое открытие файлов в табе
 map <F1> :call UseLeaderHotkey("1")<CR>
 noremap <Leader>1 :tabnew<Space>
-noremap <Leader>o :tabnew<Space>
 " очистка поиска
 map <F2> :call UseLeaderHotkey("2")<CR>
 noremap <Leader>2 :let @/=''<CR>
 " сохранение изменений
 map <F3> :call UseLeaderHotkey("3")<CR>
 imap <F3> :call UseLeaderHotkey("3")<CR>
-noremap <Leader>3 :update<CR>
-inoremap <Leader>3 <Esc>:update<CR>a
 noremap <Leader>w :update<CR>
 inoremap <Leader>w <Esc>:update<CR>a
-" сохранение изменений из insert-режима с сохранением позиции курсора
-" открыть файл под курсором
-map <F4> :call UseLeaderHotkey("4")<CR>
-noremap <Leader>4 :call OpenFileUnderCursor()<CR>
 " закрытие текущего таба
-map <F5> :q<CR>
-noremap <Leader>5 :q<CR>
 noremap <Leader>q :q<CR>
 " вертикальный сплит файла
 map <F6> :call UseLeaderHotkey("6")<CR>
@@ -207,14 +192,6 @@ noremap <Leader>6 :vsplit<Space>
 " выход с сохранением сессии
 map <F11> :call UseLeaderHotkey("9")<CR>
 map <Leader>9 :call SaveSessionAndQuit()
-" быстрый переход между табами в нормальном режиме
-nmap <C-h> gT
-nmap <C-l> gt
-" двигаем курсор в режиме редактирования вместо стрелок
-imap <C-h> <C-o>h
-imap <C-k> <C-o>k
-imap <C-l> <C-o>l
-imap <C-j> <C-o>j
 " Вставка относительного пути до текущего файла.
 nmap <Leader>f o<Esc>"%pv
 
@@ -251,6 +228,14 @@ map K 5k
 " быстрые скачки на несколько слов в стороны
 map H 3b
 map L 3e
+" быстрый переход между табами в нормальном режиме
+nmap <C-h> gT
+nmap <C-l> gt
+" двигаем курсор в режиме редактирования вместо стрелок
+imap <C-h> <C-o>h
+imap <C-k> <C-o>k
+imap <C-l> <C-o>l
+imap <C-j> <C-o>j
 
 " Автозапуски.
 autocmd vimenter * call OpenNerdTreeAtStart()
