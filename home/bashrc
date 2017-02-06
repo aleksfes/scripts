@@ -92,3 +92,6 @@ set_prompt () {
     PS1="$last_command_result $reset $pwd $username \\\$ "
 }
 PROMPT_COMMAND='set_prompt'
+
+# OK aliases
+alias ant-deploy-dev="ant clean refresh-cache build deploy-dev"
