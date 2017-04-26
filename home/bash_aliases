@@ -14,11 +14,11 @@ alias grst="git reset"
 alias grstfull="grst --hard && git clean -fd && gst"
 
 # Так как в MacOS сломался мой любимый grext, попробую перейти на алиасы для grep.
-alias grep_js="grep --include \"*.js\" -ir"
-alias grecss="grep --include \"*.css\" -ir"
-alias grep_html="grep --include \"*.html\" -ir"
-alias grep_all="grep -ir"
-alias grep_ts="grep --include \"*.ts\" -ir"
+alias grep_all="grep -ir --exclude-dir .git --exclude-dir .idea"
+alias grep_js="grep --include \"*.js\""
+alias grecss="grep --include \"*.css\""
+alias grep_html="grep --include \"*.html\""
+alias grep_ts="grep -ir --include \"*.ts\""
 
 # Для ok-admin исключаю скомпилированные шаблоны, чтобы они не забивали выдачу.
 # FIXME!!!
