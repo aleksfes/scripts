@@ -296,7 +296,6 @@ function DoUpdateCTags()
 endfunction
 command UpdateCTags :call DoUpdateCTags()
 
-map <Leader>C <C-w><C-]><C-w>T
-map <Leader>c <Leader>C<C-h>
-" При переходе между режимами курсор сдвигается, поэтому его нужно вернуть на место.
-imap <Leader>c <Esc><Leader>cli
+" Открываем определением в новом табе и возвращаемся в предыдущий таб.
+map <C-c> <C-w><C-]><C-w>T<C-h>
+imap <C-c> <Esc><C-c>li
