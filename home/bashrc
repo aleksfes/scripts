@@ -95,3 +95,5 @@ PROMPT_COMMAND='set_prompt'
 
 # OK aliases
 alias ant-deploy-dev="ant clean refresh-cache build deploy-dev"
+
+code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
