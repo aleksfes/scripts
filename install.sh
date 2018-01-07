@@ -5,14 +5,16 @@ HELP="no need"
 
 SCRIPTS=$(readlink -f $0)
 SCRIPTS=${SCRIPTS%/*}
-cfg_folder=$SCRIPTS/home
-
-ssh_public_key="feoktistov_15.07.2015.ssh.public"
-
-source ${SCRIPTS}/lib/_common.sh
+sc_home=$SCRIPTS/home
 
 
-home_folder=$(readlink -f ~)
+# Shell'ом по умолчанию может быть не bash, поэтому детектируем наличие source
+# и вызываем его, если есть, в противном случае используем команду "точка" (.).
+common_lib=${SCRIPTS}/lib/_common.sh
+(which source > /dev/null) && source $common_lib || . $common_lib
+
+
+real_home=$(readlink -f ~)
 me=$(whoami)
 
 
@@ -23,37 +25,31 @@ echo "Installation ..."
 
 
 # Добавляем ссылку на свои дополнения к bashrc.
-bashrc_my="source $cfg_folder/bashrc"
-if [ -z "`grep \"$bashrc_my\" $home_folder/.bashrc`" ]; then
-  echo "" >> $home_folder/.bashrc
-  echo "$bashrc_my" >> $home_folder/.bashrc
-  echo "" >> $home_folder/.bashrc
+bashrc_my="source $sc_home/bashrc"
+if [ -z "`grep \"$bashrc_my\" $real_home/.bashrc`" ]; then
+  echo "" >> $real_home/.bashrc
+  echo "$bashrc_my" >> $real_home/.bashrc
+  echo "" >> $real_home/.bashrc
   echo ".bashrc configured."
 fi
 
 
-# ssh ключ кладём каждый раз
-#ssh-keygen -i -f $cfg_folder/$ssh_public_key > $home_folder/.ssh/authorized_keys
-#echo "Public ssh key $ssh_public_key installed."
-#chmod 600 $home_folder/.ssh/authorized_keys
-
-
 # .inputrc
-make_link $cfg_folder/inputrc $home_folder/.inputrc
+make_link $sc_home/inputrc $real_home/.inputrc
 echo ".inputrc installed."
 
 
 # .vim
-make_link $cfg_folder/vim $home_folder/.vim
+make_link $sc_home/vim $real_home/.vim
 echo ".vim installed."
 
 
 # .vimrc
-make_link $cfg_folder/vimrc $home_folder/.vimrc
+make_link $sc_home/vimrc $real_home/.vimrc
 echo ".vimrc installed."
 
 # tern npm install
-vim_tern_folder=$SCRIPTS/home/vim/bundle/tern_for_vim
+vim_tern_folder=$sc_home/vim/bundle/tern_for_vim
 if [ -d $vim_tern_folder ]; then
 	run_cmd_in_dir $vim_tern_folder "npm install" "Installing TernJS ..."
 	echo "TernJS installed."
@@ -74,8 +70,8 @@ get_git_email() {
 	echo $email
 }
 
-git_custom_config=$home_folder/.gitconfig
-git_reference_config=$cfg_folder/gitconfig
+git_custom_config=$real_home/.gitconfig
+git_reference_config=$sc_home/gitconfig
 
 # Но сначала достаём из местного конфига используемый email.
 git_custom_email=""
