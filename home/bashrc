@@ -1,0 +1,99 @@
+export LESS=-Rn
+alias dch='dch --distributor=debian'
+
+SCRIPTS="${HOME}/scripts"
+
+if [ -d $SCRIPTS ]; then
+        PATH="${SCRIPTS}/bin:$PATH"
+fi
+
+
+# Enable 256 colors within xterm.
+if [ -e /usr/share/terminfo/x/xterm-256color ]; then
+	export TERM='xterm-256color'
+else
+	export TERM='xterm-color'
+fi
+
+shopt -s expand_aliases
+source ${SCRIPTS}/home/bash_aliases
+
+
+# bash save history immediately
+# http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
+# http://askubuntu.com/questions/67283/is-it-possible-to-make-writing-to-bash-history-immediate
+export HISTCONTROL="${HISTCONTROL}:ignoredups:erasedups:ignorespace"
+shopt -s histappend
+# I don't need bash history refreshing after each command running anymore.
+#export PROMPT_COMMAND="history -a; history -n"
+export PROMPT_COMMAND="history -a"
+
+# Генерирует путь до текущей директории для prompt в виде ../f1/f2/cwd в зависимости от уровня.
+# $1 - number, max folders level
+get_prompt_pwd() {
+    # В абсолютном пути /a/b/c при разбиении по / первый элемент будет пустым,
+    # поэтому прибавляем единицу.
+    local max_level=$((3 + 1))
+    local abs_path=$(pwd)
+
+    if [[ "$abs_path" =~ ^"$HOME"(/|$) ]]; then
+        abs_path="~${abs_path#$HOME}"
+        # Теперь у нас нет корневого /, который генерирует первый пустой токен,
+        # но есть ~/, который сгенерирует валидный первый токен.
+        max_level=$(($max_level - 1))
+    fi
+
+    echo $abs_path | awk -F/ -v max_level="$max_level" '{
+        if (NF > max_level)
+            print ".." "/" $(NF-2) "/" $(NF-1) "/" $NF "/";
+        else
+            print $0 "/"
+    }'
+}
+
+
+# Генерирует имя пользователя для добавления в prompt.
+# $1 - number, max username length
+get_prompt_user() {
+    local username=$(whoami)
+    # string to number conversion
+    local max_username_length=$(($1 + 0))
+
+    if (( ${#username} > $max_username_length )); then
+        echo "...$(echo $username | rev | cut -c 1-$max_username_length | rev)"
+    else
+        echo $username
+    fi
+}
+
+
+# Кастомизация prompt.
+# https://wiki.archlinux.org/index.php/Color_Bash_Prompt_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
+set_prompt () {
+    local last_command_code=$? # Must come first!
+    local red='\[\e[01;31m\]'
+    local green='\[\e[01;32m\]'
+    local reset='\[\e[00m\]'
+
+    # Add a bright white exit status for the last command.
+    # If it was successful, print a green check mark. Otherwise, print a red X.
+    local last_command_result=""
+    if [[ $last_command_code == 0 ]]; then
+        last_command_result="$green$?"
+    else
+        last_command_result="$red$?"
+    fi
+
+    local pwd=$(get_prompt_pwd)
+
+    local max_username_length=10
+    local username=$(get_prompt_user $max_username_length)
+
+    PS1="$last_command_result $reset $pwd $username \\\$ "
+}
+PROMPT_COMMAND='set_prompt'
+
+# OK aliases
+alias ant-deploy-dev="ant clean refresh-cache build deploy-dev"
+
+code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}

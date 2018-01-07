@@ -1,0 +1,195 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+
+
+# functions
+
+
+# Отображаем ошибку.
+error() {
+  echo -e "ERROR: $@" >&2
+  exit 1
+}
+
+
+# Отображаем помощь и произвольное сообщение.
+# $1 - текст сообщения, опциональный.
+show_help() {
+  # show message
+  if [ -n "$1" ]; then
+    echo "$1"
+    echo ""
+  fi
+
+  # show help
+  cat <<EOF
+$PROG - grep shortcuts
+
+Usage: $PROG [options] PATTERN [FOLDERS]
+
+Options:
+  --xml   grep within xml-files (exclude xsl, css, js, sh)
+  --xsl   grep within xsl-fils
+  --js    grep within js-files
+  --css   grep within css-files (css, styl)
+  --bemhtml  grep within bemhtml-files
+  --deps  grep within deps.js-files
+  --priv  grep within priv.js-files
+  -l      Print only file names (distinct)
+  -a      Strings after matched line (default - 1)
+  -b      Strings before matched line (default - 1)
+  -p      Add -P/--perl-regexp option for grep (PATTERN as Perl regexp)
+  --nl    No less: output goes to console instead of less
+  -h      Help
+  --exdir FOLDER    Exclude files from FOLDER from results (--exclude-dir grep parameter)
+  --exl   Excludes lego folder from results (--exclude-dir lego)
+  --exb   Excludes bem folder from results (--exclude-dir bem)
+
+Example:
+  $PROG --xsl -a 5 "name=\"getMenuItem-command\""
+EOF
+  exit
+}
+
+# default options
+type="all"
+after=1
+before=1
+perl=""
+only_filenames=""
+less="less -R"
+exclude_dirs=""
+
+# getting options
+
+TEMP=`getopt -n $PROG -o lhpa:b: --long xml,xsl,css,bemhtml,priv,deps,js,nl,exdir:,exl,exb  -- "$@"` || show_help
+eval set -- "$TEMP"
+
+while :;  do
+  case "$1" in
+    --exdir)
+      exclude_dirs="$exclude_dirs --exclude-dir $2"
+      shift
+    ;;
+    --exl)
+      exclude_dirs="$exclude_dirs --exclude-dir lego"
+    ;;
+    --exb)
+      exclude_dirs="$exclude_dir --exclude-dir bem"
+    ;;
+    -l)
+      only_filename="-l"
+    ;;
+    --xml)
+      type="xml"
+    ;;
+    --xsl)
+      type="xsl"
+    ;;
+    --js)
+      type="js"
+    ;;
+    --css)
+      type="css"
+    ;;
+    --priv)
+      type="priv"
+    ;;
+    --deps)
+      type="deps"
+    ;;
+    --bemhtml)
+      type="bemhtml"
+    ;;
+    -h)
+      show_help
+    ;;
+    -a)
+      after="$2"
+      shift
+    ;;
+    -p)
+      perl="-P"
+    ;;
+    -b|--before)
+      before="$2"
+      shift
+    ;;
+    --nl)
+      less="cat"
+    ;;
+    --)
+      shift
+      break
+    ;;
+    *)
+      error "Internal error"
+    ;;
+  esac
+  shift
+
+done
+
+# получаем текст - он обязателен!
+pattern=${1:-""}
+shift
+# текст поиска - обязательный параметр
+if [ -z "${pattern}" ]
+then
+  show_help "You should set PATTERN!"
+  exit 0
+fi
+
+### наконец-то работаем
+
+context_params="-A ${after} -B ${before}"
+color_params="--color=always"
+keys="-irnH"
+
+common_params="${keys} ${color_params} ${only_filename} ${perl} ${context_params} ${exclude_dirs}"
+
+grep_params=""
+
+case "$type" in
+  "xml")
+    exclude_files="--exclude=*.xsl --exclude=*.css --exclude=*.js --exclude=*.sh"
+    exclude_dir="--exclude-dir=CVS --exclude-dir=\.git"
+    grep_params="${common_params} ${exclude_files} ${exclude_dir}"
+  ;;
+  "xsl")
+    include_files="--include=*.xsl"
+    grep_params="${common_params} ${include_files}"
+  ;;
+  "js")
+    include_files="--include=*.js"
+    grep_params="${common_params} ${include_files}"
+  ;;
+  "css")
+    include_files="--include=*.css --include=*.styl"
+    grep_params="${common_params} ${include_files}"
+  ;;
+  "bemhtml")
+    include_files="--include=*.bemhtml"
+    grep_params="${common_params} ${include_files}"
+  ;;
+  "priv")
+    include_files="--include=*.priv.js"
+    grep_params="${common_params} ${include_files}"
+  ;;
+  "deps")
+    include_files="--include=*.deps.js"
+    grep_params="${common_params} ${include_files}"
+  ;;
+  "all")
+    grep_params="${common_params} ${context_params}"
+  ;;
+esac
+
+# отправляем вывод нескольких команд цикла в less
+# если заданы конкретные папки - ищем в них
+if [ -n "$1" ]; then
+  ( while [ -n "$1" ]; do grep $grep_params "$pattern" $1; if [ -n "$2" ]; then echo "--"; fi; shift; done ) | $less
+else # иначе ищем в текущей
+  grep $grep_params "$pattern" * | $less
+fi

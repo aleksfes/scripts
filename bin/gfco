@@ -1,0 +1,76 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - shortcut for fetching and checking out given branch from remote repository
+
+Usage:
+  $PROG [repo/]branch
+  $PROG [repo] branch
+
+  repo - optional, remote repository to fetch branch from, default is 'origin'
+  branch - require, branch to checkout
+
+Example:
+  $PROG github/scripts
+  $PROG github scripts
+  $PROG scripts
+"
+
+source ${SCRIPTS}/lib/_common.sh
+
+
+# Параметры
+
+args_number="$#"
+
+p_repo=""
+p_branch=""
+
+if [ "$args_number" == 2 ]; then
+	p_repo="$1"
+	p_branch="$2"
+elif [ "$args_number" == 1  ]; then
+	p_repo=${1%%/*}
+	p_branch=${1##*/}
+	if [ "$p_repo" == "$1" ]; then
+		p_branch="$p_repo"
+		p_repo="origin"
+	fi
+else
+	error_and_help "you should set repo and branch!"
+fi
+
+
+# Все дела
+
+difflines="$(git diff --name-status | wc -l)"
+# Кривой способ сделать trim для цифры в MacOS.
+difflines=$((difflines + 0))
+echo "difflines = $difflines"
+if [ "$difflines" != "0" ]; then
+	error "you have local changes! Please, stash or reset them."
+fi
+
+# Проверяем, что такой локальной ветки ещё нет.
+run_cmd "git show-branch ${p_branch}"
+
+showbranch_status="$?"
+# Если ветка не существует, то фетчим её из репозитория.
+if [ "$showbranch_status" == "128" ]; then
+	run_cmd "git fetch ${p_repo} ${p_branch}:${p_branch}" \
+		"Fetching branch ${p_branch} from remote repository ${p_repo}"
+	check_cmd_status "fetching failed"
+elif [ "$showbranch_status" != "0" ]; then
+	error "unknown error (exit code: ${showbranch_status})"
+else
+	show_msg "Branch ${p_branch} already exists! Using it ..."
+fi
+
+run_cmd "git checkout ${p_branch}" \
+	"Checking out branch ${p_branch}"
+check_cmd_status "checkout failed"
+
+run_cmd "git status" \
+	"Branch ${p_branch} successfully fetched from ${p_repo} and checked out!"

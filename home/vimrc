@@ -1,0 +1,301 @@
+scriptencoding utf-8;
+set encoding=utf-8
+set fileencoding=utf-8
+
+" pathogen init
+filetype off
+execute pathogen#infect()
+execute pathogen#helptags()
+
+" dart-vim-plugin
+if has('vim_starting')
+  set nocompatible
+  set runtimepath+=~/.vim/bundle/dart-vim-plugin
+endif
+
+syntax on
+filetype on
+filetype plugin on
+" filetype plugin indent on " пока удалим это, а то в js'е vim делает какие-то неприятные отступы
+
+" Чиним автодополнение.
+set omnifunc=syntaxcomplete#Complete
+
+" включение режима 256 цветов до переключения цветовой схемы
+set t_Co=256
+" включаем цветовую схему
+set background=light
+colorscheme myhemisu
+
+" Делаем так, чтобы vim останавливался на _ при прыжках по e/b.
+let g:feoktistov_iskeyword=substitute(&iskeyword, ',_', '', '')
+let &iskeyword=g:feoktistov_iskeyword
+
+set textwidth=120 " Автоперенос текста.
+set laststatus=2 "Всегда показывать строку состояния
+set number "Нумеровать строки
+set numberwidth=4 "Ширина поля нумерации строк
+set ruler "Всегда показывать позицию курсора
+set title "Установить имя текущего файла и путь к нему в заголовке
+set list "Включить подсветку табуляции и пробелов в конце строки
+set listchars=tab:>·,trail:· "Установить символы которыми будет осуществляться подсветка
+set hlsearch "Подсветка результатов поиска
+set nowrapscan "Останавливать поиск по достижению конца файла
+set tabstop=4 "Размер табуляции
+set shiftwidth=4 "Размер отступов
+set smartindent "Умные отступы
+set autoindent "Автоматические отступы
+set foldcolumn=1 "Отступ между кодом и левой границей
+set smartcase "Умный поиск (?)
+set ignorecase "Включаем регистронезависимый поиск
+set incsearch " Поиск одновременно с вводом.
+set completeopt=longest,menuone
+set scrolloff=5 " Отступ курсора от конца экрана
+
+" Убираю обычный индикатор режима потому, что использую vim-airline.
+set noshowmode
+
+" TernJS, tern_for_vim
+" http://www.dotnetsurfers.com/blog/2016/02/08/using-vim-as-a-javascript-ide
+" enable keyboard shortcuts
+let g:tern_map_keys=1
+" show argument hints
+let g:tern_show_argument_hints='on_hold'
+
+" Мышь в MacOS для скролла и выделения.
+set mouse=a
+
+highlight ColorColumn ctermbg=253
+let &colorcolumn="100,".join(range(120,999), ",")
+
+set splitright " Открываем вертикальные окна справа.
+
+" Возвращаем нормальную функциональность backspace в vim 7.4.
+set backspace=2
+
+" NERDTree
+" отображение скрытых файлов
+let NERDTreeShowHidden=1
+let NERDTreeAutoDeleteBuffer = 1
+
+" скрытие ненужных сообщений
+set shortmess=atI
+" подсвечивать строку с курсором
+set cursorline
+" отключить бекап файлов
+set nobackup
+set noswapfile
+set nowritebackup
+
+" не сохраняем настройки в сессию - пусть всегда берутся из конфига
+set sessionoptions-=options
+" сохраняем изменения в размерах окон, чтобы не раздражало в будущем
+set sessionoptions+=resize
+
+" Папка для backup-файлов, // означает автоматическое разрешение конфликтов имён
+set backupdir=~/.vim/_backup//
+" Папка для swp-файлов, // означает автоматическое разрешение конфликтов имён
+set directory=~/.vim/_swp//
+
+" javascript
+au BufNewFile,BufRead *.tjson set filetype=json
+au BufNewFile,BufRead *.jake set filetype=javascript
+au BufNewFile,BufRead Jakefile set filetype=javascript
+au BufNewFile,BufRead *.bemhtml set filetype=javascript
+
+" vim-json
+let g:vim_json_syntax_conceal = 0
+
+" css
+au BufNewFile,BufRead *.styl set filetype=css
+
+" быстрое сохранение сессии/файлов и выход
+function! SaveSessionAndQuit()
+	!rm -f ~/.session.vim
+	mksession ~/.session.vim
+	wa
+	qa
+endfunction
+
+" Запуск NERDTree первым табом.
+function! OpenNerdTree()
+	" У меня не получилось перенести NERDTree из окна в таб, поэтому
+	" действуем через пустой таб, где будет закрыто пустое соседнее окно.
+	:tabnew
+	:NERDTree
+	:wincmd l
+	:q
+	:tabm 0
+endfunction
+
+
+" Запуск NERDTree при старте vim'а - переход на таб с целевым файлом.
+function! OpenNerdTreeAtStart()
+	:call OpenNerdTree()
+	" Возвращаемся на таб с целевым файлом.
+	:tabnext
+	" Если таб пустой, то закрываем его.
+	let $currFile = @%
+	if $currFile == ""
+		:q
+	endif
+	" Если мы набираем комментарий к коммиту git'а, то закрываем NERDTree.
+	if expand("%:t") == "COMMIT_EDITMSG"
+		:tabNext
+		:q
+	endif
+endfunction
+
+
+" Проверяем, существует ли файл по заданному пути.
+" http://stackoverflow.com/questions/3098521/vimscript-how-to-detect-if-specific-file-exists
+function! CheckFileExists(fileName)
+	if filereadable(a:fileName)
+		return 1
+	else
+		return 0
+	endif
+endfunction
+
+
+" Открыть файл под курсором.
+function! OpenFileUnderCursor()
+	" Получаем имя файла под курсором
+	let $path = expand('<cfile>')
+
+	" Открываем таб с файлом
+	if $path == ""
+		echo "No file name under your cursor!"
+	elseif CheckFileExists($path) == 0
+		echo "File " . $path . " not found!"
+	else
+		:tabnew $path
+	endif
+endfunction
+
+function! UseLeaderHotkey(afterLeader)
+	echo "Current hotkey is deprecated! Please, use '\<Leader\>" . a:afterLeader . "' hotkey."
+endfunction
+
+
+" Горячие клавиши:
+
+" быстрое открытие файлов в табе
+map <F1> :call UseLeaderHotkey("1")<CR>
+noremap <Leader>1 :tabnew<Space>
+" очистка поиска
+map <F2> :call UseLeaderHotkey("2")<CR>
+noremap <Leader>2 :let @/=''<CR>
+" сохранение изменений
+map <F3> :call UseLeaderHotkey("3")<CR>
+imap <F3> :call UseLeaderHotkey("3")<CR>
+noremap <Leader>w :update<CR>
+inoremap <Leader>w <Esc>:update<CR>a
+" закрытие текущего таба
+noremap <Leader>q :q<CR>
+" вертикальный сплит файла
+map <F6> :call UseLeaderHotkey("6")<CR>
+noremap <Leader>6 :vsplit<Space>
+" выход с сохранением сессии
+map <F11> :call UseLeaderHotkey("9")<CR>
+map <Leader>9 :call SaveSessionAndQuit()
+" Вставка относительного пути до текущего файла.
+nmap <Leader>f o<Esc>"%pv
+
+" заставляем Vim использовать системный буфер обмена при копировании/вставке (y/p).
+set clipboard=unnamed
+
+" убираем лидирующие пробельные символы у текущей строки и подклеиваем её к предыдущей
+nmap <Leader><Space> ^d0d$k$p
+
+imap <Leader>; <Esc>A;<Esc>
+nmap <Leader>; <Esc>A;<Esc>
+imap <Leader>, <Esc>A,<Esc>
+nmap <Leader>, <Esc>A,<Esc>
+nmap <Leader><Enter> i<CR><Esc>
+
+" Настройки Ctrl-P
+let g:ctrlp_use_caching = 0
+let g:ctrlp_by_filename = 0
+let g:ctrlp_max_height = 30
+let g:ctrlp_open_multiple_files = 'tj'
+let g:ctrlp_lazy_update = 1
+let g:ctrlp_custom_ignore = {
+	\ 'dir': '\v[\/](\.git|node_modules|bower_components|build|client/tmp|client/dist|out)$',
+	\ }
+let g:ctrlp_prompt_mappings = {
+	\ 'AcceptSelection("e")': [],
+	\ 'AcceptSelection("t")': ['<c-t>', '<cr>'],
+	\ 'MarkToOpen()': ['<c-z>', '<space>'],
+	\ }
+
+" быстрые скачки на несколько строк
+map J 5j
+map K 5k
+" быстрые скачки на несколько слов в стороны
+map H 3b
+map L 3e
+" быстрый переход между табами в нормальном режиме
+nmap <C-h> gT
+nmap <C-l> gt
+" двигаем курсор в режиме редактирования вместо стрелок
+imap <C-h> <C-o>h
+imap <C-k> <C-o>k
+imap <C-l> <C-o>l
+imap <C-j> <C-o>j
+
+" Автозапуски.
+autocmd vimenter * call OpenNerdTreeAtStart()
+
+" Отключаем стирание регистра при вставке через _p_.
+" http://vim.wikia.com/wiki/Replace_a_word_with_yanked_text
+xnoremap p "_dP
+
+" Перенос закрывающей фигурной скобки на новую строку.
+" http://stackoverflow.com/questions/21316727/automatic-closing-brackets-for-vim
+let g:delimitMate_expand_cr = 2
+
+" Подменяем частые опечатки.
+command Qa qa
+command W w
+
+" Свой grep с блекджеком и прочим.
+" Параметры:
+" - шаблон для поиска;
+" - папка, в которой ищем, по умолчанию ищет в текущей папке.
+function DoGrep(...)
+    let l:exclude = ""
+    let l:exclude = l:exclude . " --exclude-dir node_modules"
+    let l:exclude = l:exclude . " --exclude-dir bower_components"
+    let l:exclude = l:exclude . " --exclude-dir .tmp"
+    let l:exclude = l:exclude . " --exclude-dir dist"
+
+    " Вручную экранируем $ перед передачей в grep.
+    let l:legal_pattern=substitute(a:1, "\\$", "\\\\$", "")
+
+    let l:target= a:0 > 1 ? a:2 : "."
+
+    " Запускаем grep с silent, чтобы Vim не просил нажать на Enter и не показывал вывод grep.
+    :execute "silent grep! " . l:exclude . " -ir \"" . l:legal_pattern . "\" " . l:target
+
+    " Если сделать copen в текущей табе, а потом открыть файл из списка найденного,
+    " то мы потеряем исходный файл из текущей табы, поэтому открываем новую табу сразу.
+    :tabnew
+    :copen
+
+endfunction
+" Команда для своего grep.
+command -nargs=* Greee :call DoGrep(<f-args>)
+" Shortcut для своего grep.
+noremap <Leader>g :Greee<Space>
+
+function DoUpdateCTags()
+	silent !if [ -d ui/src ]; then ctags -R ui/src; fi
+	silent !if [ -d client/src ]; then ctags -R client/src; fi
+	silent !if [ -d client/app ]; then ctags -R client/app; fi
+endfunction
+command UpdateCTags :call DoUpdateCTags()
+
+" Открываем определением в новом табе и возвращаемся в предыдущий таб.
+map <C-c> <C-w><C-]><C-w>T<C-h>
+imap <C-c> <Esc><C-c>li

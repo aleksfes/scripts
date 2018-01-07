@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/opt/www/feoktistov/mygit/jakelib/i18n'
+let g:netrw_dirhist_2='/opt/www/feoktistov/build_mu-1.68-card2card/bem/makeupd'
+let g:netrw_dirhist_3='/home/feoktistov/scripts/home/vim'
+let g:netrw_dirhist_4='/Users/aleksander.feoktistov/dev/ok-admin/.git'

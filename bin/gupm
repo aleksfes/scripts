@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Сохраняет текущие изменения, обновляет master и возвращается на текущую ветку с изменениями.
+
+current_branch=$(git branch -a | grep "*" | sed 's/* //g')
+
+git add --all
+git stash save
+git checkout master
+gm
+git checkout $current_branch
+git stash pop
+git reset
+clear
+git status
