@@ -27,3 +27,6 @@ alias grejs="grep_js --exclude populate_template_cache.js"
 alias grehtml="grep_html --exclude populate_template_cache.js"
 alias greee="grep_all --exclude populate_template_cache.js"
 alias grets="grep_ts --exclude populate_template_cache.js"
+
+# OK aliases
+alias ant-deploy-dev="ant clean refresh-cache build deploy-dev"
