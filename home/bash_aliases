@@ -15,7 +15,7 @@ alias grstfull="grst --hard && git clean -fd && gst"
 alias gbg="git branch -a | grep"
 
 # Так как в MacOS сломался мой любимый grext, попробую перейти на алиасы для grep.
-alias grep_all="grep -ir --exclude-dir .git --exclude-dir .idea"
+alias grep_all="grep -irn --exclude-dir .git --exclude-dir .idea"
 alias grep_js="grep --include \"*.js\""
 alias grecss="grep --include \"*.css\""
 alias grep_html="grep --include \"*.html\""
