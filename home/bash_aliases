@@ -12,6 +12,7 @@ alias gru="git remote update"
 alias gcp="git cherry-pick -x"
 alias grst="git reset"
 alias grstfull="grst --hard && git clean -fd && gst"
+alias gbg="git branch -a | grep"
 
 # Так как в MacOS сломался мой любимый grext, попробую перейти на алиасы для grep.
 alias grep_all="grep -ir --exclude-dir .git --exclude-dir .idea"
