@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Script to find and check out local branch by part of it's name.
+# Usage: see example below.
+
+query=$1
+
+if [ -z "$query" ]; then
+  echo "Please, provide query to find and checkout branch!"
+  echo "Example:"
+  echo "  gbgco SPA-1234"
+  exit 1
+fi
+
+branch=$(git branch | grep $1)
+
+if [ -z "$branch" ]; then
+  echo "No branches found by query '${query}'!"
+  exit 1
+fi
+
+branches_number=$(echo "$branch" | wc -l)
+
+if [ $branches_number != 1 ]; then
+  echo "There are too many branches found. Please, checkout needed branch manually."
+  echo "$branch"
+  exit 1
+fi
+
+if [[ "$branch" = *'*'*  ]]; then
+  echo "Found branch ($branch) is checked out right now!"
+  exit 0
+fi
+
+git checkout $branch
+
+echo ""
+echo " *"
+echo " * *"
+echo " * * * $branch"
+echo " * *"
+echo " *"
+echo ""
+
+git status
+
