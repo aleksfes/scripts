@@ -49,7 +49,10 @@ else
     if [ -z "$show_diff" ]; then
       diff_options="${diff_options} -q"
     fi
-    ${diff_cmd} ${diff_options} --exclude="CVS" --exclude=".git" "$src" "$dst" | ${show_result}
+    ${diff_cmd} ${diff_options} --exclude="CVS" --exclude=".git" "$src" "$dst" | \
+      # Преобразуем выдачу diff'а вида 'Files A and B differ' к готовой команде 'diff A B'
+      sed -e 's/ and /  /g' -e 's/ differ//g' -e 's/Files /diff /g' | \
+      ${show_result}
   # неправильные параметры
   else
     echo "ERROR: \"$src\" or \"$dst\" are not looking at file/folder!!!"
