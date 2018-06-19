@@ -1,0 +1,60 @@
+#!/bin/bash
+
+videolink=$1
+outputfile=$2
+
+youtube_downloader=ytdl
+youtube_downloader_install="npm -g i ytdl"
+
+dest=~/music
+if [ -d ~/Music ]; then
+  dest=~/Music
+fi
+
+
+## FUNCTIONS
+
+
+function help() {
+  local extra_message=$1
+  if [ -n "$extra_message" ]; then
+    echo ""
+    echo "$extra_message"
+  fi
+  echo ""
+  echo "Example:"
+  echo "  --"
+  echo "  $ you2mp3 https://www.youtube.com/watch?v=fdK3HLg3dYY output.mp3"
+  echo "  --"
+  echo "  Audio data from the video will be saved to ~/Music/output.mp3."
+}
+
+
+## MAIN
+
+
+if [ -z "$videolink" ]; then
+  help "Please, pass link to the Youtube video."
+  exit 1
+fi
+
+if [ -z "$outputfile" ]; then
+  help "Please, pass path to an output file. The file will be automatically saved to ~/music."
+  exit 1
+fi
+
+mkdir -p $dest
+targetfile=$dest/$outputfile
+
+if [ -f $targetfile ]; then
+  rm $targetfile
+fi
+
+which $youtube_downloader
+if [ "$?" != "0" ]; then
+  echo "Please, install '${youtube_downloader}' using "
+  echo "  $youtube_downloader_install"
+  exit 1
+fi
+
+$youtube_downloader -q highestaudio $videolink | ffmpeg -i pipe:0 -b:a 192K -vn $targetfile
