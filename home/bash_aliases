@@ -29,4 +29,7 @@ alias greee="grep_all --exclude populate_template_cache.js"
 alias grets="grep_ts --exclude populate_template_cache.js"
 
 # OK aliases
-alias ant-deploy-dev="ant clean refresh-cache build deploy-dev"
+alias ant-deploy-dev="echo 'Use ant-dd or ant-dd-pl instead!'"
+alias ant-dd="ant clean refresh-cache build deploy-dev"
+alias ant-ddpl="ant clean refresh-cache build deploy-dev ivy-publish-local"
+alias ant-rt="ant clean run-tomcat"
