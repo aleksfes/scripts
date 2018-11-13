@@ -7,6 +7,12 @@
 	autocrlf = input
 	editor = vim
 	preloadindex = true
+	# ok.ru best practices
+	precomposeunicode = true
+	# ok.ru best practices
+	ignorecase = true
+	# ok.ru best practices
+	quotePath = true
 [i18n]
 	commitencoding = utf8
 	logoutputencoding = utf8
