@@ -1,0 +1,28 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - информация об использовании сетевого порта.
+
+Usage:
+    $PROG PORT
+Parameters:
+    PORT - обязательный, сетевой порт, использование которого хотим посмотреть
+Examples:
+    $PROG 8080
+"
+
+source ${SCRIPTS}/lib/_common.sh
+
+
+PORT=$1
+
+if [ -z "$PORT" ]; then
+    show_help
+    exit 0
+fi
+
+# Точно работает на MacOS.
+lsof -i -n -P | grep TCP | grep $PORT
+
