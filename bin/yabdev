@@ -1,0 +1,33 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - запускает Яндекс.Браузер с независимым профилем и в дебаг-режиме
+
+Usage:
+    $PROG HELP
+Parameters:
+    HELP - опциональный, произвольная непустая строка, если задана, то будет показана эта помощь
+Examples:
+    $PROG
+"
+
+source ${SCRIPTS}/lib/_common.sh
+
+
+PARAM=$1
+
+if [ -n "$PARAM" ]; then
+    show_help
+    exit 0
+fi
+
+PROFILE_DIR=/Users/feoktistov/ya-b-dev-data-dir
+DEBUG_PORT=9666
+YABROWSER_BIN="/Applications/Yandex.app/Contents/MacOS/Yandex"
+
+mkdir -p $PROFILE_DIR
+
+$YABROWSER_BIN --remote-debugging-port=$DEBUG_PORT --user-data-dir=$PROFILE_DIR
+
