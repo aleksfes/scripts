@@ -3,18 +3,22 @@
 PROG="${0##*/}"
 HELP="no need"
 
-SCRIPTS=$(readlink -f $0)
-SCRIPTS=${SCRIPTS%/*}
-sc_home=$SCRIPTS/home
+# get 'scripts' folder absolute path - cross platform way
+START_PWD=$(pwd)
+cd $(dirname $0)
+SCRIPTS=$(pwd -P)
+cd $START_PWD
 
+sc_home=$SCRIPTS/home
 
 # Shell'ом по умолчанию может быть не bash, поэтому детектируем наличие source
 # и вызываем его, если есть, в противном случае используем команду "точка" (.).
 common_lib=${SCRIPTS}/lib/_common.sh
 (which source > /dev/null) && source $common_lib || . $common_lib
 
-
-real_home=$(readlink -f ~)
+cd ~
+real_home=$(pwd -P)
+cd $START_PWD
 me=$(whoami)
 
 
