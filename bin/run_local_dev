@@ -1,0 +1,28 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - запускает сборку и слежение за статикой для локальной разработки
+
+Usage:
+    $PROG HELP
+Parameters:
+    HELP - опциональный, произвольная непустая строка, если задана, то будет показана эта помощь
+Examples:
+    $PROG
+"
+
+
+source ${SCRIPTS}/lib/_common.sh
+
+
+show_help_if_param "$1"
+
+
+tabset_title "Local_Webpack"
+tabset_color green
+
+
+cd ~/dev/partnernode
+npm start
