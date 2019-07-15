@@ -65,6 +65,48 @@ show_help() {
 }
 
 
+# Отображает помощь, если передана любая непустая строка
+# $1 - ожидаемая строка
+show_help_if_param() {
+	if [ -n "$1" ]; then
+		show_help
+	fi
+}
+
+
+# Выставляет заголовок таба, только для iTerm/tabset.
+# https://github.com/jonathaneunice/iterm2-tab-set
+# ВНИМАНИМЕ: если в $1 есть пробел, то отбрасывается всё, что правее этого пробела,
+# а цвет таба будет сброшен на рандомный! Наверное, это бага в tabset потому,
+# что средствами bash мне не удалось заставить tabset работать нормально.
+# $1 - заголовок таба
+tabset_title() {
+	local cmd="tabset --title $1"
+	if_tabset_run "$cmd"
+}
+
+
+# Выставляет цвет фона заголовка таба, только для iTerm/tabset.
+# https://github.com/jonathaneunice/iterm2-tab-set
+# $1 - цвет
+tabset_color() {
+	local cmd="tabset --color $1"
+	if_tabset_run "$cmd"
+}
+
+
+# Запускает команду, если tabset установлена в системе.
+# https://github.com/jonathaneunice/iterm2-tab-set
+# $1 - команда
+if_tabset_run() {
+	if [ -n "$(which tabset)" ]; then
+		run_cmd "$1"
+	else
+		warn "tabset is not installed, see https://github.com/jonathaneunice/iterm2-tab-set"
+	fi
+}
+
+
 # Запуск заданной команды с выводом описания.
 # $1 - запускаемая команда.
 # $2 - опциональный, описание команды.
