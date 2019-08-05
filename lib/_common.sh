@@ -265,3 +265,20 @@ make_link () {
 		echo "make_link: file $target_file not found!"
 	fi
 }
+
+
+# Обрезает слишком длинную строку с начала строки, оставляет конец.
+# $1 - строка
+# $2 - максимальная длина строки
+cut_long_string_start() {
+	local str=$1
+	local max_length_str=$2
+	# string to number conversion
+	local max_length=$(($max_length_str + 0))
+
+	if (( ${#str} > $max_length )); then
+		echo "...$(echo $str | rev | cut -c 1-$max_length | rev)"
+	else
+		echo $str
+	fi
+}

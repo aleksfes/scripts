@@ -55,44 +55,32 @@ get_prompt_pwd() {
 }
 
 
-# Генерирует имя пользователя для добавления в prompt.
-# $1 - number, max username length
-get_prompt_user() {
-    local username=$(whoami)
-    # string to number conversion
-    local max_username_length=$(($1 + 0))
-
-    if (( ${#username} > $max_username_length )); then
-        echo "...$(echo $username | rev | cut -c 1-$max_username_length | rev)"
-    else
-        echo $username
-    fi
-}
-
-
 # Кастомизация prompt.
 # https://wiki.archlinux.org/index.php/Color_Bash_Prompt_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
 set_prompt () {
-    local last_command_code=$? # Must come first!
-    local red='\[\e[01;31m\]'
-    local green='\[\e[01;32m\]'
-    local reset='\[\e[00m\]'
+	local last_command_code=$? # Must come first!
+	local red='\[\e[01;31m\]'
+	local green='\[\e[01;32m\]'
+	local reset='\[\e[00m\]'
 
-    # Add a bright white exit status for the last command.
-    # If it was successful, print a green check mark. Otherwise, print a red X.
-    local last_command_result=""
-    if [[ $last_command_code == 0 ]]; then
-        last_command_result="$green$?"
-    else
-        last_command_result="$red$?"
-    fi
+	# Add a bright white exit status for the last command.
+	# If it was successful, print a green check mark. Otherwise, print a red X.
+	local last_command_result=""
+	if [[ $last_command_code == 0 ]]; then
+		last_command_result="$green$?"
+	else
+		last_command_result="$red$?"
+	fi
 
-    local pwd=$(get_prompt_pwd)
+	local pwd=$(get_prompt_pwd)
 
-    local max_username_length=10
-    local username=$(get_prompt_user $max_username_length)
+	local max_username_length=10
+	local username=$(cut_long_string_start $(whoami) $max_username_length)
 
-    PS1="$last_command_result $reset $pwd $username \\\$ "
+	local max_hostname_length=6
+	local hostname=$(cut_long_string_start $(hostname) $max_hostname_length)
+
+	PS1="$last_command_result $reset $pwd $username:$hostname \\\$ "
 }
 PROMPT_COMMAND='set_prompt'
 
