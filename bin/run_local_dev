@@ -20,7 +20,7 @@ source ${SCRIPTS}/lib/_common.sh
 show_help_if_param "$1"
 
 
-tabset_title "Local_Webpack"
+tabset_title "WEBPACK PI START"
 tabset_color green
 
 

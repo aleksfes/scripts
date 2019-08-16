@@ -19,13 +19,13 @@ source ${SCRIPTS}/lib/_common.sh
 show_help_if_param "$1"
 
 
-tabset_title "Yandex_BROWSER"
+tabset_title "DEV_BROWSER"
 tabset_color red
 
 
 PROFILE_DIR=/Users/feoktistov/ya-b-dev-data-dir
 DEBUG_PORT=9666
-YABROWSER_BIN="/Applications/Yandex.app/Contents/MacOS/Yandex"
+YABROWSER_BIN=/Applications/Yandex.app/Contents/MacOS/Yandex
 
 mkdir -p $PROFILE_DIR
 
