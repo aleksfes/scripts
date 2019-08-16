@@ -22,6 +22,39 @@ shopt -s expand_aliases
 source ${SCRIPTS}/home/bash_aliases
 
 
+# Добавляет заданный ssh-ключ в ssh agent, если ssh agent ещё не знает этот ключ.
+# Нужно ручную добавить вызов этого скрипта в ~/.bashrc (или аналог)!
+# Например, add_key_to_ssh_agent ~/.ssh/your-key_rsa
+# $1 - абсолютный путь до ssh-ключа
+add_key_to_ssh_agent() {
+	local pathToKey=${1}
+
+	echo ""
+	echo "add_key_to_ssh_agent:"
+
+	# Просто будем показывать ошибки, иначе эта функция, запущенная в .bashrc, убивает вкладку терминала.
+	if [ ! -f $pathToKey ]; then
+		show_error "file $pathToKey does not exist!"
+	else
+		local fileName=$(basename $pathToKey)
+		ssh-add -l | grep $fileName &> /dev/null
+		if [ $? == 0 ]; then
+			echo "SSH agent is already running with key ${fileName}!"
+		else
+			echo "Please, input your passphrase to run SSH agent with key ${fileName}."
+			ssh-add $pathToKey
+			if [ $? == 0 ]; then
+				echo "Hooray! Key ${fileName} was successfully added to SSH agent!"
+			else
+				echo "Sorry, something went wrong while adding key ${fileName} to SSH agent!"
+			fi
+		fi
+	fi
+
+	echo ""
+}
+
+
 # bash save history immediately
 # http://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
 # http://askubuntu.com/questions/67283/is-it-possible-to-make-writing-to-bash-history-immediate
