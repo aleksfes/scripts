@@ -122,7 +122,14 @@ set_prompt () {
 }
 PROMPT_COMMAND='set_prompt'
 
+
+# Открытие VS Code из консоли.
+# Просто открыть:
+# code
+# Открыть папку или файл:
+# code path-to-file-or-folder
 code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+
 
 if [ -n "$(which tmux)" ]; then
 	# При отсутствии сессий tmux пишет в stderr, что сервер не запущен,
@@ -130,6 +137,13 @@ if [ -n "$(which tmux)" ]; then
 	tmux has-session &> /dev/null
 	if [ $? = 0 ]; then
 		show_msg "TMUX SESSIONS:" "$(tmux ls)"
+		# ВНИМАНИЕ: если не нужно автоматически подключаться к единственной tmux-сессии,
+		# то в ~/.bashrc или аналоге ДО подключения этого файла нужно задать непустой значение
+		# для переменной FEO_DISABLE_TMUX_ATTACH.
+		# Кажется, что это никогда не понадобится, но пусть будет.
+		if [ -z "$FEO_DISABLE_TMUX_ATTACH" ]; then
+			tmux attach
+		fi
 	else
 		show_msg "TMUX SESSIONS: no tmux sessions available"
 	fi
