@@ -1,46 +1,61 @@
 #!/bin/bash
 
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - делает checkout для ветки, которая содержит подстроку, переданную в качестве параметра
+Usage: $PROG substr
+Examples:
+	$PROG PR-12345
+"
+
+source ${SCRIPTS}/lib/_common.sh
+
 # Script to find and check out local branch by part of it's name.
 # Usage: see example below.
 
 query=$1
 
 if [ -z "$query" ]; then
-  echo "Please, provide query to find and checkout branch!"
-  echo "Example:"
-  echo "  gbgco SPA-1234"
-  exit 1
+	show_help
+	exit 0
 fi
 
 branch=$(git branch | grep $1)
 
 if [ -z "$branch" ]; then
-  echo "No branches found by query '${query}'!"
-  exit 1
+	echo "Ветки, имя которой содержало бы подстроку '${query}', не найдено!"
+	exit 1
 fi
 
 branches_number=$(echo "$branch" | wc -l)
 
 if [ $branches_number != 1 ]; then
-  echo "There are too many branches found. Please, checkout needed branch manually."
-  echo "$branch"
-  exit 1
+	echo "Найдено больше одной ветки, в имени которых встречается подстрока '${query}':"
+	echo "$branch"
+	exit 1
 fi
 
-if [[ "$branch" = *'*'*  ]]; then
-  echo "Found branch ($branch) is checked out right now!"
-  exit 0
+if [[ "$branch" = *'*'*	]]; then
+	echo "Ветка $branch уже выложена!"
+	exit 0
 fi
 
 git checkout $branch
 
-echo ""
-echo " *"
-echo " * *"
-echo " * * * $branch"
-echo " * *"
-echo " *"
-echo ""
-
-git status
+if [ $? == 0 ]; then
+	echo ""
+	echo " *"
+	echo " * *"
+	echo " * * * $branch"
+	echo " * *"
+	echo " *"
+	echo ""
+else
+	echo ""
+	echo "ВНИМАНИЕ: почему-то ветка"
+	echo $branch
+	echo "не была выложена! Посмотрите ошибку выше!"
+	echo ""
+fi
 
