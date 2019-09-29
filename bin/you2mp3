@@ -1,15 +1,10 @@
 #!/bin/bash
 
-videolink=$1
-outputfile=$2
+PROG=${0##*/}
 
-youtube_downloader=ytdl
-youtube_downloader_install="npm -g i ytdl"
-
-dest=~/music
-if [ -d ~/Music ]; then
-  dest=~/Music
-fi
+url=$1
+itag=$2
+outputfile=$3
 
 
 ## FUNCTIONS
@@ -17,44 +12,64 @@ fi
 
 function help() {
   local extra_message=$1
+
+  echo ""
+  echo "$PROG - tool to download audio content of a given Youtube video"
+  echo "Example:"
+  echo "  $PROG https://www.youtube.com/watch?v=fdK3HLg3dYY"
+  echo "    available versions of audio tracks will be listed"
+  echo "  $PROG https://www.youtube.com/watch?v=fdK3HLg3dYY 140 file.mp3"
+  echo "    audio track will be downloaded to a mp3-file 'file.mp3'"
+  echo ""
+
   if [ -n "$extra_message" ]; then
     echo ""
     echo "$extra_message"
+    exit 1
   fi
-  echo ""
-  echo "Example:"
-  echo "  --"
-  echo "  $ you2mp3 https://www.youtube.com/watch?v=fdK3HLg3dYY output.mp3"
-  echo "  --"
-  echo "  Audio data from the video will be saved to ~/Music/output.mp3."
 }
+
+
+## REQUIREMENTS
+
+
+if [ -z "$(which ytdl)" ]; then
+  help "Please, install 'ytdl' using 'npm i -g ytdl' command."
+fi
+
+if [ -z "$(which ffmpeg)" ]; then
+  help "Please, install 'ffmpeg'!"
+fi
+
+if [ -z "$url" ]; then
+  help "Please, pass link to the Youtube video."
+fi
+
+if [ -n "$itag" -a -z "$outputfile" ]; then
+  help "Please, specify output file nams as a third parameter."
+fi
+
+
+## ITAGS
+
+
+if [ -z "$itag" ]; then
+  ytdl -i $url
+
+  echo ""
+  echo "Please, pass needed itag number as a second parameter:"
+  echo "  $PROG $url 140 FILE.mp3"
+  echo ""
+
+  exit 0
+fi
 
 
 ## MAIN
 
 
-if [ -z "$videolink" ]; then
-  help "Please, pass link to the Youtube video."
-  exit 1
+if [ -f $outputfile ]; then
+  rm $outputfile
 fi
 
-if [ -z "$outputfile" ]; then
-  help "Please, pass path to an output file. The file will be automatically saved to ~/music."
-  exit 1
-fi
-
-mkdir -p $dest
-targetfile=$dest/$outputfile
-
-if [ -f $targetfile ]; then
-  rm $targetfile
-fi
-
-which $youtube_downloader
-if [ "$?" != "0" ]; then
-  echo "Please, install '${youtube_downloader}' using "
-  echo "  $youtube_downloader_install"
-  exit 1
-fi
-
-$youtube_downloader -q highestaudio $videolink | ffmpeg -i pipe:0 -b:a 192K -vn $targetfile
+ytdl -q $itag $url | ffmpeg -i pipe:0 -b:a 192K -vn $outputfile
