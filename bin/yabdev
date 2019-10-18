@@ -19,15 +19,12 @@ source ${SCRIPTS}/lib/_common.sh
 show_help_if_param "$1"
 
 
-tabset_title "DEV_BROWSER"
-tabset_color red
-
-
 PROFILE_DIR=/Users/feoktistov/ya-b-dev-data-dir
-DEBUG_PORT=9666
-YABROWSER_BIN=/Applications/Yandex.app/Contents/MacOS/Yandex
+#DEBUG_PORT=9666
+# --remote-debugging-port=$DEBUG_PORT
+YABROWSER_APP=/Applications/Yandex-dev.app
 
 mkdir -p $PROFILE_DIR
 
-$YABROWSER_BIN --remote-debugging-port=$DEBUG_PORT --user-data-dir=$PROFILE_DIR
+open -a $YABROWSER_APP --args "--user-data-dir=$PROFILE_DIR"
 
