@@ -60,8 +60,12 @@ else
 	show_msg "Branch ${p_branch} have already fetched!"
 fi
 
+blank_lines
+
 run_cmd "git checkout ${p_branch}" "Checking out branch ${p_branch}"
 check_cmd_status "checkout failed"
+
+blank_lines
 
 run_cmd "git status" "Branch ${p_branch} is ready!"
 
