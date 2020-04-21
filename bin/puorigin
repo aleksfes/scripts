@@ -3,77 +3,46 @@
 PROG="${0##*/}"
 SCRIPTS="${0%/*/*}"
 HELP="
-$PROG - shortcut для вызова команды git push
-	Всегда работает с текущей веткой.
+$PROG - shortcut для вызова команды git push, всегда работает с текущей веткой и пушит в origin.
 Usage: $PROG [OPTIONS]
 Options:
-	-f - опциональный, запустить push с ключом -f.
-	-h - опциональный, отобразить описание программы.
-	--to - опциональный, ветка назначения в удалённом репозитории, по умолчанию - текущая ветка.
-	--repo - опциональный, удалённый репозиторий, по умолчанию - origin.
-Examples:
-	$PROG
-	$PROG --to QWEB-12345
+    -f - опциональный, запустить push с ключом --force
+    -h - показ этой помощи
 "
 
 source ${SCRIPTS}/lib/_common.sh
 
 
+### HELP
+
+
+if [ "$1" == "-h" -o "$2" == "-h" ]; then
+  show_help
+  exit 0
+fi
+
+
 ### PARAMETERS AND GLOBALS
+
 
 curr_branch="`git rev-parse --abbrev-ref HEAD`"
 
 p_force=""
-p_to="$curr_branch"
 p_repo="origin"
 
-TEMP=`getopt -n $PROG -o hf --long to:,repo -- "$@"` || error_unknown_option
-eval set -- "$TEMP"
-
-while :;  do
-	case "$1" in
-		--repo)
-			p_repo="$2"
-			shift
-		;;
-		--to)
-			p_to="$2"
-			shift
-		;;
-		-h)
-			show_help
-			exit 0
-		;;
-		-f)
-			p_force="-f"
-		;;
-		--)
-			shift
-			break
-		;;
-  esac
-  shift
-done
+if [ "$1" == "-f" -o "$2" == "-f" ]; then
+  p_force="--force"
+fi
 
 
-### VALIDATION
+### RUN
 
 
 if [ -z "$curr_branch" ]; then
 	error "can't get source branch!"
 fi
 
-if [ -z "$p_to" ]; then
-	error "empty target branch!"
-fi
-
-if [ -z "$p_repo" ]; then
-	error "empty remote repository name!"
-fi
-
-
-run_cmd "git push $p_force $p_repo ${curr_branch}:${p_to}" \
-	"Pushing branch $curr_branch to repo $p_repo to branch $p_to"
+run_cmd "git push $p_force $p_repo ${curr_branch}:${curr_branch}" "Pushing branch $curr_branch to repo $p_repo"
 
 if [ $? != 0 ]; then
 	error "error occured while pushing."
