@@ -1,0 +1,29 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - shorcut for 'git pull' for current branch
+
+Usage:
+  $PROG
+"
+
+source ${SCRIPTS}/lib/_common.sh
+
+p1=${1}
+
+if [ -n "$p1" ]; then
+    show_help
+fi
+
+branch="`git rev-parse --abbrev-ref HEAD`"
+
+if [ -z "$branch" ]; then
+    error_and_help "can't get current git branch!"
+fi
+
+show_msg "Current branch is '${branch}'."
+
+run_cmd "git pull origin ${branch}:${branch}"
+
