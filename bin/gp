@@ -28,6 +28,6 @@ run_cmd "git status" "Current status"
 
 show_msg ""
 
-run_cmd "git pull origin ${branch}:${branch}" "Pushing the branch to remote repo"
+run_cmd "git pull --ff-only origin ${branch}:${branch}" "Pushing the branch to remote repo"
 
 show_msg ""
