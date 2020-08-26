@@ -30,7 +30,7 @@ curr_branch="`git rev-parse --abbrev-ref HEAD`"
 p_force=""
 p_repo="origin"
 
-if [ "$1" == "-f" -o "$2" == "-f" ]; then
+if [ "$1" == "-f" -o "$2" == "-f" -o "$1" == "--force" -o "$2" == "--force" ]; then
   p_force="--force"
 fi
 
