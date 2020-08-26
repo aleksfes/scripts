@@ -1,0 +1,32 @@
+#!/bin/bash
+
+PROG="${0##*/}"
+SCRIPTS="${0%/*/*}"
+HELP="
+$PROG - вызов заданной команды заданное количество раз
+Usage: $PROG TIMES command to run
+Options:
+    TIMES - количество раз, которое нужно запустить программу
+
+Example:
+    $PROG 3 echo 'ololo'
+"
+
+source ${SCRIPTS}/lib/_common.sh
+
+# https://www.baeldung.com/linux/repeat-command
+
+TIMES=$1
+CMD=${*:2}
+
+if [ -z "$TIMES" ]; then
+  error_and_help 'Пожалуйста, задайте количество повторений и команду'
+fi
+
+if [ -z "$CMD" ]; then
+  error_and_help 'Пожалуйста, задайте команду для повторения'
+fi
+
+for ((i=0; i < $TIMES; i++)); do
+  run_cmd "${*:2}"
+done
