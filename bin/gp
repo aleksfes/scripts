@@ -23,7 +23,11 @@ if [ -z "$branch" ]; then
     error_and_help "can't get current git branch!"
 fi
 
-show_msg "Current branch is '${branch}'."
 
-run_cmd "git pull origin ${branch}:${branch}"
+run_cmd "git status" "Current status"
 
+show_msg ""
+
+run_cmd "git pull origin ${branch}:${branch}" "Pushing the branch to remote repo"
+
+show_msg ""
