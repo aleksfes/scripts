@@ -11,6 +11,8 @@ Usage:
 
 source ${SCRIPTS}/lib/_common.sh
 
+repo=origin
+
 p1=${1}
 
 if [ -n "$p1" ]; then
@@ -23,11 +25,26 @@ if [ -z "$branch" ]; then
     error_and_help "can't get current git branch!"
 fi
 
+show_msg "Current branch is" "" "  ${branch}"
 
 run_cmd "git status" "Current status"
 
-show_msg ""
+print_divider
 
-run_cmd "git pull --ff-only origin ${branch}:${branch}" "Pushing the branch to remote repo"
+run_cmd "git pull --ff-only ${repo} ${branch}:${branch}" "Pushing the branch to remote repo"
 
-show_msg ""
+pull_result=$?
+
+print_divider
+
+if [ "${pull_result}" -eq "0" ]; then
+  show_msg "Pulling completed successfully!"
+else
+  commits_ahead=$(git rev-list --count ${repo}/${branch}..${branch})
+  if [ $commits_ahead -gt 0 ]; then
+    show_msg "LOCAL BRANCH IS AHEAD OF REMOTE ONE!!!"
+  else
+    error "unexpected error!!!"
+  fi
+fi
+
