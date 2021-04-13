@@ -18,6 +18,7 @@ show_error() {
 # $1 - сообщение об ошибке.
 error() {
 	show_error "$@"
+	echo ""
 	exit 1
 }
 
