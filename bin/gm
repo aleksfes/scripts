@@ -3,19 +3,7 @@
 PROG="${0##*/}"
 SCRIPTS="${0%/*/*}"
 HELP="
-$PROG - shortcut for git merge with given repository and current branch
-
-Usage:
-  $PROG repo [branch]
-
-  repo - required, remote repository to update and merge from
-      or it can be format \"repo/branch\"
-  branch - optional, branch to merge, default - current branch
-
-Example:
-  $PROG avm
-  $PROG avm/mu-1.89-index-part8
-  $PROG avm mu-1.89-index-part8
+$PROG - pulls current branch from origin repo
 "
 
 source ${SCRIPTS}/lib/_common.sh
@@ -24,40 +12,25 @@ source ${SCRIPTS}/lib/_common.sh
 # Параметры
 
 
-branch="`git rev-parse --abbrev-ref HEAD`"
+branch="`git branch --show-current`"
 
-p_1="${1:-origin}"
-
-# Сначала пытаемся распарсить вариант repo/branch.
-p_repo=${p_1%%/*}
-p_branch=${p_1##*/}
-
-# Репозиторий - обязательный параметр!
-if [ -z "$p_repo" ]; then
-	error "You should set remote repository name!"
+if [ -z "$branch" ]; then
+    error "can't get current branch name!"
 fi
-
-# Если ветка не задана в первом параметре, то берём её из второго параметра,
-# или из текущей ветки.
-if [ "$p_branch" = "$p_1" ]; then
-	p_branch=${2:-$branch}
-fi
-
-
-# Все дела
 
 run_cmd "git status" "Current status"
 
-run_cmd "git remote update $p_repo" "Updating remote repository $p_repo"
+blank_lines 2
 
-merge_options=""
+repo="origin"
 
-# При мердже со своим репозиторием всегда используем --no-ff, чтобы не замерджить
-# случайно отладочный или удалённый код.
-if [ "$p_repo" == "origin" ]; then
-	merge_options="$merge_options --ff-only"
-fi
+run_cmd "git pull --ff-only $repo ${branch}:${branch}" "Pulling branch $branch from $repo"
 
-run_cmd "git merge $merge_options $p_repo/$p_branch" "Merging branch $p_repo/$p_branch"
+blank_lines 2
+
+run_cmd "git status" "Status after pull"
+
+blank_lines 2
 
 show_msg "Merge finished!"
+
