@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "Running autotest with AT_ID=$1 ..."
-
-AT_ID=$1 make autotest
