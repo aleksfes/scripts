@@ -15,7 +15,8 @@ p_branch="$1"
 
 branch="$p_branch"
 if [ -z "$branch" ]; then
-    branch="`git branch --show-current`"
+    # Для олдовых git'ов, которые живут на логрусах.
+    branch="`git rev-parse --abbrev-ref HEAD`"
 fi
 
 if [ -z "$branch" ]; then
