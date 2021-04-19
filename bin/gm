@@ -11,8 +11,12 @@ source ${SCRIPTS}/lib/_common.sh
 
 # Параметры
 
+p_branch="$1"
 
-branch="`git branch --show-current`"
+branch="$p_branch"
+if [ -z "$branch" ]; then
+    branch="`git branch --show-current`"
+fi
 
 if [ -z "$branch" ]; then
     error "can't get current branch name!"
@@ -23,8 +27,13 @@ run_cmd "git status" "Current status"
 blank_lines 2
 
 repo="origin"
+params=""
+if [ -z "$p_branch" ]; then
+    # ff-only только для текущей ветки, а при мердже с другой веткой без него.
+    params="--ff-only"
+fi
 
-run_cmd "git pull --ff-only $repo ${branch}:${branch}" "Pulling branch $branch from $repo"
+run_cmd "git pull ${params} $repo ${branch}:${branch}" "Pulling branch $branch from $repo"
 
 blank_lines 2
 
