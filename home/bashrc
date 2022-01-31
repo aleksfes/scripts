@@ -43,6 +43,7 @@ add_key_to_ssh_agent() {
 		else
 			echo "Please, input your passphrase to run SSH agent with key ${fileName}."
 			ssh-add $pathToKey
+			echo ""
 			if [ $? == 0 ]; then
 				echo "Hooray! Key ${fileName} was successfully added to SSH agent!"
 			else
