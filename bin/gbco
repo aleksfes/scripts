@@ -36,8 +36,13 @@ if [ $branches_number != 1 ]; then
 	exit 1
 fi
 
-if [[ "$branch" = *'*'*	]]; then
+if [[ "$branch" = *'*'* ]]; then
 	echo "Ветка $branch уже выложена!"
+	exit 0
+fi
+
+if [[ "$branch" = *'+'* ]]; then
+	echo "Ветка ${branch:2} уже выложена в другой рабочей копии!"
 	exit 0
 fi
 
