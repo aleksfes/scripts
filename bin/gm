@@ -44,3 +44,8 @@ blank_lines 2
 
 show_msg "Merge finished!"
 
+blank_lines 2
+
+run_cmd "git --no-pager show -s" "Last commit"
+
+blank_lines 2
