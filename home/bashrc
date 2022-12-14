@@ -106,6 +106,8 @@ set_prompt () {
 		last_command_result="$red$?"
 	fi
 
+	local date_color='\e[0;34m'
+	local date=$(date +"%H:%M:%S")
 	local pwd=$(get_prompt_pwd)
 
 	local max_username_length=10
@@ -119,7 +121,7 @@ set_prompt () {
 		tmux=" ${green}TMUX${reset}"
 	fi
 
-	PS1="$last_command_result $reset $pwd $username:${green}${hostname}${reset}${tmux} \\\$ "
+	PS1="$last_command_result${reset} ${date_color}${date}${reset} $pwd $username:${green}${hostname}${reset}${tmux} \\\$ "
 }
 PROMPT_COMMAND='set_prompt'
 
