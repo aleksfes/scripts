@@ -10,3 +10,17 @@ kvm port forwarding
 https://serverfault.com/questions/170079/forwarding-ports-to-guests-in-libvirt-kvm
 https://www.cyberciti.biz/faq/kvm-forward-ports-to-guests-vm-with-ufw-on-linux/
 
+```bash
+# сначала нужно установить netfilter-persistent
+
+# настраиваем проброс портов
+sudo iptables -t nat -I PREROUTING -p tcp -d EXTERNALIP --dport EXTERNALPORT -j DNAT --to-destination INTERNALIP:INTERNALPORT
+
+# в первый раз
+sudo iptables -L FORWARD -nv --line-number
+sudo iptables -t nat -L PREROUTING -n -v --line-number
+
+# сохраняем, чтобы применилось после перезапуска хоста
+sudo service netfilter-persistent save
+```
+
