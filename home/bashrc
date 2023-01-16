@@ -106,7 +106,7 @@ set_prompt () {
 		last_command_result="$red$?"
 	fi
 
-	local date_color='\e[0;34m'
+	local date_color='\[\e[0;34m\]'
 	local date=$(date +"%H:%M:%S")
 	local pwd=$(get_prompt_pwd)
 
