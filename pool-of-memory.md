@@ -1,4 +1,21 @@
 
+### 2023.02.24
+
+Установка Magisk на Google Pixel 7
+
+1. Скачать прошивку, распаковать zip
+2. Если есть `payload.bin`, то сделать `payload-dumper-go payload.bin`
+3. Кладём `boot.img` на телефон - `./adb push PATH-TO-EXTRACTED-PAYLOAD-BIN/init_boot.img /sdcard/`
+4. На телефоне открываем Magisk и патчим `boot.img`
+5. Берём с телефона пропатченный `boot.img` - `./adb pull /storage/emulated/0/Download/magisk_patched-VERSION_RANDOM.img SOMEWHERE/`
+6. Грузимся в fastboot - `./adb reboot fastboot`
+7. Патчим ядро - `./fastboot flash init_boot SOMEWHERE/magisk_patched-VERSION_RANDOM.img`
+8. Грузимся в систему - `./fastboot reboot`
+9. Проверяем в Termux - `su`, в самом Magisk признаков успешной установки может и не быть
+
+https://4pda.to/forum/index.php?showtopic=1056929&st=40#entry118659642
+https://4pda.to/forum/index.php?showtopic=1056929&st=0#entry118196601
+
 ### 2023.01.06
 
 Доступ до lan за клиентом openvpn на keenetic - допилка
