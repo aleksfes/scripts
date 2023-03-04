@@ -48,11 +48,11 @@ warn() {
 # Выводит в консоль заданное количество пустых строк.
 # $1 - количество пустых строк, по умолчанию - 2
 blank_lines() {
-	local i=1;
 	local lines=${1:-2}
 
-	for ((; i<=lines; i++)); do
+	while [ $lines -gt 0 ]; do
 		echo ""
+		lines=$((lines - 1))
 	done
 }
 
