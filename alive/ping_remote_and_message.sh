@@ -29,6 +29,8 @@ if [[ ! -f $PING_LOG_FILE ]]; then
 	error_and_help "создайте лог-файл"
 fi
 
+HOST_NAME="openvpn-server"
+
 PING_IS_OK="PING_RESULT_OK"
 PING_IS_FAILED="PING_RESULT_FAILED"
 
@@ -51,16 +53,16 @@ PING_RESULT=$?
 if [[ "$PING_RESULT" -eq "0" ]]; then
 	# Если сервер поднялся, то пишем об этом в чат.
 	if [[ ! "$LAST_PING_IS_OK" -eq "0" ]]; then
-		tsEcho "$PING_IS_OK" >> $PING_LOG_FILE
-		MSG="Ура! Сервер $IP_ALIAS ($IP) поднялся!"
+		tsEcho "$PING_IS_OK $IP" >> $PING_LOG_FILE
+		MSG="Ура! Сервер $IP_ALIAS ($IP) вновь доступен с ${HOST_NAME}!"
 		sendMessage "$BOT_TOKEN" "$CHAT_ID" "$MSG"
 	fi
 else
 	# При фейлах пинга логируем всегда.
-	tsEcho "$PING_IS_FAILED" >> $PING_LOG_FILE
+	tsEcho "$PING_IS_FAILED $IP" >> $PING_LOG_FILE
 	# При первом фейле пишем в тг, остальные фейлы игнорируем до следующего успеха, чтобы не спамить.
 	if [[ "$LAST_PING_IS_OK" -eq "0" ]]; then
-		MSG="Сервер $IP_ALIAS ($IP) недоступен :("
+		MSG="Сервер $IP_ALIAS ($IP) недоступен с ${HOST_NAME} :("
 		sendMessage "$BOT_TOKEN" "$CHAT_ID" "$MSG"
 	fi
 fi
