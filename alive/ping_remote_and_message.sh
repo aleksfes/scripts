@@ -44,8 +44,15 @@ else
 	LAST_PING_IS_OK=$?
 fi
 
-ping -c 1 -W 1 $IP > /dev/null
-PING_RESULT=$?
+# Пингуем несколько раз до первого успеха, чтобы исключить случайные флапы сети.
+PING_RESULT=1
+NUMBER_OF_PING_TRIES=5
+while [ "$PING_RESULT" != "0" ] && [ "$NUMBER_OF_PING_TRIES" != "0" ]; do
+	# Нужно смотреть ping именно линуксовый потому, что на MacOS есть разница в параметрах!
+	ping -c 1 -W 1 $IP > /dev/null
+	PING_RESULT=$?
+	NUMBER_OF_PING_TRIES=$(($NUMBER_OF_PING_TRIES - 1))
+done
 
 # dev-test purpose
 #PING_RESULT=1
