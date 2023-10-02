@@ -1,3 +1,12 @@
+### 2023.10.02
+
+Реагирование на включение/выключения питания ноутбука от сети в Ubuntu
+
+```
+/etc/udev/rules.d/10-power.supply.rules
+
+SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="[01]", RUN+="path-to-shell-script-to-run"
+```
 
 ### 2023.03.04
 
