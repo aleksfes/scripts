@@ -1,5 +1,7 @@
 # Алиасы для git команд.
-alias gst="git status"
+alias git_last_commit='git --no-pager log -n 1 --pretty=format:"%h%x09%an%x09%ad%x09%s" --date=format:"%Y-%m-%d %H:%M:%S"'
+alias git_last_commit_pretty='echo "" &&  echo "Last commit:" && git_last_commit && echo "" && echo ""'
+alias gst="git status && git_last_commit_pretty"
 alias gd="git diff -M"
 alias gds="gd --staged"
 alias ga="git add"
@@ -7,7 +9,7 @@ alias gaa="git add --all"
 alias gl="git log"
 alias gs="git show"
 alias gci="git commit --verbose"
-alias gco="git checkout"
+alias gco="git checkout && git_last_commit_pretty"
 alias gru="git remote update"
 alias gcp="git cherry-pick -x"
 alias grst="git reset"
