@@ -113,8 +113,11 @@ set_prompt () {
 	local max_username_length=10
 	local username=$(cut_long_string_start $(whoami) $max_username_length)
 
+	local FULL_HOST=$(hostname)
+	local SHORT_HOST=${FULL_HOST%%.*}
+
 	local max_hostname_length=10
-	local hostname=$(cut_long_string_start $(hostname) $max_hostname_length)
+	local hostname=$(cut_long_string_start $SHORT_HOST $max_hostname_length)
 
 	local tmux=""
 	if [ -n "$TMUX" ]; then
