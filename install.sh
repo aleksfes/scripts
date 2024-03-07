@@ -47,10 +47,13 @@ echo ".inputrc installed."
 make_link $sc_home/vim $real_home/.vim
 echo ".vim installed."
 
-
 # .vimrc
 make_link $sc_home/vimrc $real_home/.vimrc
 echo ".vimrc installed."
+
+# .tmux.conf
+make_link $sc_home/tmux.conf $real_home/.tmux.conf
+echo ".tmux.conf installed."
 
 # tern npm install
 vim_tern_folder=$sc_home/vim/bundle/tern_for_vim
