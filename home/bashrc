@@ -110,6 +110,18 @@ set_prompt () {
 	local date=$(date +"%H:%M:%S")
 	local pwd=$(get_prompt_pwd)
 
+	local full_pwd=$(pwd)
+	local vcs=""
+	if [[ $full_pwd == *"/arcadia/"* ]]; then
+		vcs="ARC"
+	elif [[ $full_pwd == *"/dev/shards/"* || $full_pwd == *"/monomarket_feoktistov/"* ]]; then
+		vcs="GIT"
+	fi
+	# Ставим пробел, чтобы отделять от соседнего значения, если нам есть, что выводить.
+	if [ -n "$vcs" ]; then
+		vcs=" ${vcs}"
+	fi
+
 	local max_username_length=10
 	local username=$(cut_long_string_start $(whoami) $max_username_length)
 
@@ -124,7 +136,7 @@ set_prompt () {
 		tmux=" ${green}TMUX${reset}"
 	fi
 
-	PS1="$last_command_result${reset} ${date_color}${date}${reset} $pwd $username:${green}${hostname}${reset}${tmux} \\\$ "
+	PS1="$last_command_result${reset} ${date_color}${date}${reset} ${pwd}${vcs} $username:${green}${hostname}${reset}${tmux} \\\$ "
 }
 PROMPT_COMMAND='set_prompt'
 
