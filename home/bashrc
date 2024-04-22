@@ -68,21 +68,26 @@ export PROMPT_COMMAND="history -a"
 # Генерирует путь до текущей директории для prompt в виде ../f1/f2/cwd в зависимости от уровня.
 # $1 - number, max folders level
 get_prompt_pwd() {
+    local max_level=3
     # В абсолютном пути /a/b/c при разбиении по / первый элемент будет пустым,
     # поэтому прибавляем единицу.
-    local max_level=$((3 + 1))
+    local use_level=$(($max_level + 1))
     local abs_path=$(pwd)
 
     if [[ "$abs_path" =~ ^"$HOME"(/|$) ]]; then
         abs_path="~${abs_path#$HOME}"
         # Теперь у нас нет корневого /, который генерирует первый пустой токен,
         # но есть ~/, который сгенерирует валидный первый токен.
-        max_level=$(($max_level - 1))
+        use_level=$(($use_level - 1))
     fi
 
-    echo $abs_path | awk -F/ -v max_level="$max_level" '{
-        if (NF > max_level)
-            print ".." "/" $(NF-2) "/" $(NF-1) "/" $NF "/";
+    # max_level = 3 / use_level = 4
+    # print ".." "/" $(NF-2) "/" $(NF-1) "/" $NF "/";
+    # max_level = 2 / use_level = 3
+    # print ".." "/" $(NF-1) "/" $NF "/";
+    echo $abs_path | awk -F/ -v use_level="$use_level" '{
+        if (NF > use_level)
+            print ".." "/" $(NF-1) "/" $NF "/";
         else
             print $0 "/"
     }'
