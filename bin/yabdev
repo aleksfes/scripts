@@ -1,30 +1,7 @@
 #!/bin/bash
 
-PROG="${0##*/}"
-SCRIPTS="${0%/*/*}"
-HELP="
-$PROG - запускает Яндекс.Браузер с независимым профилем и в дебаг-режиме
+echo ""
+echo "Use browser profiles via GUI, Luke!"
+echo ""
 
-Usage:
-    $PROG HELP
-Parameters:
-    HELP - опциональный, произвольная непустая строка, если задана, то будет показана эта помощь
-Examples:
-    $PROG
-"
-
-source ${SCRIPTS}/lib/_common.sh
-
-
-show_help_if_param "$1"
-
-
-PROFILE_DIR=/Users/feoktistov/ya-b-dev-data-dir
-#DEBUG_PORT=9666
-# --remote-debugging-port=$DEBUG_PORT
-YABROWSER_APP=/Applications/Yandex-dev.app
-
-mkdir -p $PROFILE_DIR
-
-open -a $YABROWSER_APP --args "--user-data-dir=$PROFILE_DIR"
-
+exit 1
