@@ -111,20 +111,16 @@ set_prompt () {
 		last_command_result="$red$?"
 	fi
 
-	local date_color='\[\e[0;34m\]'
 	local date=$(date +"%H:%M:%S")
 	local pwd=$(get_prompt_pwd)
 
+	local branch=""
 	local full_pwd=$(pwd)
-	local vcs=""
 	if [[ $full_pwd == *"/arcadia/"* ]]; then
-		vcs="ARC"
-	elif [[ $full_pwd == *"/dev/shards/"* || $full_pwd == *"/monomarket_feoktistov/"* ]]; then
-		vcs="GIT"
-	fi
-	# Ставим пробел, чтобы отделять от соседнего значения, если нам есть, что выводить.
-	if [ -n "$vcs" ]; then
-		vcs=" ${vcs}"
+		branch=$(arc info --json 2>/dev/null | jq -r .branch)
+		if [ -n "$branch" ]; then
+			branch=" $branch"
+		fi
 	fi
 
 	local max_username_length=10
@@ -141,7 +137,7 @@ set_prompt () {
 		tmux=" ${green}TMUX${reset}"
 	fi
 
-	PS1="$last_command_result${reset} ${date_color}${date}${reset} ${pwd}${vcs} $username:${green}${hostname}${reset}${tmux} \\\$ "
+	PS1="$last_command_result${reset} ${green}${date}${reset} ${pwd}${branch} $username:${green}${hostname}${reset}${tmux} \\\$ "
 }
 PROMPT_COMMAND='set_prompt'
 
