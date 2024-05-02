@@ -21,6 +21,7 @@ BOT_TOKEN=$3
 CHAT_ID=$4
 # В этот файл будут писаться результаты некоторых пингов для отложенного разбора ситуации.
 PING_LOG_FILE=$5
+SKIP_TG_MESSAGE=$6
 
 if [[ -z "$IP" ]] || [[ -z "$IP_ALIAS" ]] || [[ -z "$BOT_TOKEN" ]] || [[ -z "$CHAT_ID" ]]; then
 	error_and_help "задайте параметры"
@@ -57,12 +58,18 @@ done
 # dev-test purpose
 #PING_RESULT=1
 
+sendTgMessage() {
+	if [ -z "$SKIP_TG_MESSAGE" ]; then
+		sendMessage $1 $2 "$3"
+	fi
+}
+
 if [[ "$PING_RESULT" -eq "0" ]]; then
 	# Если сервер поднялся, то пишем об этом в чат.
 	if [[ ! "$LAST_PING_IS_OK" -eq "0" ]]; then
 		tsEcho "$PING_IS_OK $IP" >> $PING_LOG_FILE
 		MSG="Ура! Сервер $IP_ALIAS ($IP) вновь доступен с ${HOST_NAME}!"
-		sendMessage "$BOT_TOKEN" "$CHAT_ID" "$MSG"
+		sendTgMessage "$BOT_TOKEN" "$CHAT_ID" "$MSG"
 	fi
 else
 	# При фейлах пинга логируем всегда.
@@ -70,7 +77,7 @@ else
 	# При первом фейле пишем в тг, остальные фейлы игнорируем до следующего успеха, чтобы не спамить.
 	if [[ "$LAST_PING_IS_OK" -eq "0" ]]; then
 		MSG="Сервер $IP_ALIAS ($IP) недоступен с ${HOST_NAME} :("
-		sendMessage "$BOT_TOKEN" "$CHAT_ID" "$MSG"
+		sendTgMessage "$BOT_TOKEN" "$CHAT_ID" "$MSG"
 	fi
 fi
 

@@ -91,7 +91,7 @@ urlencodeParam() {
 # Делает echo, но с timestamp
 # PRIVATE
 tsEcho() {
-	echo $(date --rfc-3339=seconds) $*
+	echo $(date --iso-8601=seconds) $*
 }
 
 
