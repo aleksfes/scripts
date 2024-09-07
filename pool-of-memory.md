@@ -45,17 +45,17 @@ kvm port forwarding
 https://serverfault.com/questions/170079/forwarding-ports-to-guests-in-libvirt-kvm
 https://www.cyberciti.biz/faq/kvm-forward-ports-to-guests-vm-with-ufw-on-linux/
 
+07.09.2024 сработало вот это - https://askubuntu.com/questions/1065570/kvm-nat-port-forwarding
+
 ```bash
-# сначала нужно установить netfilter-persistent
+# ставим netfilter-persistent
+sudo apt install iptables-persistent
 
-# настраиваем проброс портов
-sudo iptables -t nat -I PREROUTING -p tcp -d EXTERNALIP --dport EXTERNALPORT -j DNAT --to-destination INTERNALIP:INTERNALPORT
+iptables -t nat -I PREROUTING -p tcp -d HOST_IP --dport HOST_PORT -j DNAT --to-destination VM_IP:VM_PORT
 
-# в первый раз
-sudo iptables -L FORWARD -nv --line-number
-sudo iptables -t nat -L PREROUTING -n -v --line-number
+# VM_SUBNET
+iptables -I FORWARD -m state -d 192.168.122.0/24 --state NEW,RELATED,ESTABLISHED -j ACCEPT
 
-# сохраняем, чтобы применилось после перезапуска хоста
-sudo service netfilter-persistent save
+service netfilter-persistent save
 ```
 
